@@ -22,6 +22,9 @@ private:
 	//
 	// Here you may add anything you want
 	//
+    // meilleur joueur
+    // arbre de tous les joueurs
+    // arbre de toutes les equipes
 	
 public:
 	// <DO-NOT-MODIFY> {
