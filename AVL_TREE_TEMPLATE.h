@@ -13,10 +13,9 @@ template<class T, class S>
 class AVL{
     private:
         class Node{
-            Node* left;
-            Node* right;
             T key;
             S data;
+            Node* left, right;
         };
         Node* root;
         int size;
@@ -136,7 +135,7 @@ class AVL{
     }
 
 
-    void inorder(Node* node){
+    void inorderFunc(Node* node){
         if (node == NULL){
             return;
         }
@@ -144,14 +143,6 @@ class AVL{
         cout << node->data << "  ";
         inorderFunc(node->right);
 
-    }
-
-    void inorderAid(Node* node){
-        if (node == nullptr)
-            return;
-        inorderAid(node->left);
-        cout << node->data << "  ";
-        inorderAid(node->right);
     }
 
 
