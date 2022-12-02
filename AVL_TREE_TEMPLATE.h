@@ -21,20 +21,17 @@ class AVL{
         int size;
 
     public:
-    AVL(): root(NULL), size(0){}
+    AVL(): root(NULL), size(0){} //c'tor
 
-    ~AVL(){
-        clear();
-    }
+    ~AVL(){ clearTree(); } //d'tor
 
 
     void insert(T key, S data){
         root = insertFunc(root, key, data);
         size++;
-    }
+    } //insert the node in his place in the AVL tree, keeping it balanced
 
-    Node* insertFunc(Node* node, T key,S data)
-    {
+    Node* insertFunc(Node* node, T key,S data){
         if (node == nullptr) {
             node = new Node;
             node->key = key;
@@ -43,8 +40,7 @@ class AVL{
             node->right = nullptr;
             return node;
         }
-        else if (key < node->key)
-        {
+        else if (key < node->key){
             node->left = insertFunc(node->left, key,data);
             node = balance(node);
         } else if (node->key <= key) {
@@ -54,13 +50,11 @@ class AVL{
     }
 
 
-    Node* find(T key)
-    {
+    Node* find(T key){
         return findFunc(root,key);
-    }
+    } // Find a node according to his key
 
-    Node* findFunc(Node* node,T &key) const
-    {
+    Node* findFunc(Node* node,T &key) const{
         if (node == nullptr){
             return nullptr;
         }
@@ -73,13 +67,13 @@ class AVL{
         else {
             return findFunc(node->left,key);
         }
-    }
+    }//recursive helper find function
 
 
     void remove (T key){
         root = removeFunc(root, key);
         size--;
-    }
+    } // remove a node accroding to his key
 
     Node* removeFunc(Node* node, T key){
         Node* tmp;
@@ -116,23 +110,37 @@ class AVL{
 
         node = balance(node); // We now have to balance the tree
         return node;
-    }
+    } //recursive helper remove function
 
 
-
-    void clear(){
-        clearFunc (root);
+    void clearTree(){
+        clearTreeFunc (root);
         root = NULL;
         size = 0;
-    }
+    }//remove all nodes without deleting the data
 
-    void clearFunc(Node* node) {
+    void clearTreeFunc(Node* node) {
         if (node != nullptr) {
-            clearFunc(node->left);
-            clearFunc(node->right);
+            clearTreeFunc(node->left);
+            clearTreeFunc(node->right);
             delete node;
         }
-    }
+    }//recursive helper clear function
+
+    void ClearDataAndTree(){
+        ClearDataAndTreeFunc(root);
+        root = nullptr;
+        size=0;
+    }//remove all nodes deleting the data
+
+    void ClearDataAndTreeFunc (Node* node){
+        if(node != nullptr){
+            ClearDataAndTreeFunc(node->left);
+            ClearDataAndTreeFunc(node->right);
+            delete node->data;
+            delete node;
+        }
+    }// recursive helper clear tree and data
 
 
     void inorderFunc(Node* node){
@@ -143,7 +151,38 @@ class AVL{
         cout << node->data << "  ";
         inorderFunc(node->right);
 
+    }//print node's data with in-order traversal
+
+    void AVL_to_array_inorder(T **arr, int* i){
+        AVL_to_array_inorder_helper(root,arr,i);
     }
+
+    void AVL_to_array_inorder_helper(Node* firstNode,T **arr, int* i){
+        if(firstNode== nullptr){
+            return;
+        }
+        AVL_to_array_inorder_helper(firstNode->left,arr,i);
+        (*arr)[*i]=firstNode->key;
+        (*i)++;
+        AVL_to_array_inorder_helper(firstNode->right,arr,i);
+    }
+
+
+    void array_to_AVL_inorder(T ** arrKey,S **arrData, int* i){
+        array_to_AVL_inorder_helper(root,arrKey,arrData,i);
+    }
+
+    void array_to_AVL_inorder_helper(Node* firstNode,T ** arrKey,S **arrData, int* i){
+        if(firstNode== nullptr){
+            return;
+        }
+        array_to_AVL_inorder_helper(firstNode->left,arrKey,arrData,i);
+        firstNode->key = (*arrKey)[*i];
+        firstNode->data = (*arrData)[*i];
+        (*i)++;
+        array_to_AVL_inorder_helper(firstNode->right,arrKey,arrData,i);
+    }
+
 
 
     S getData(Node* node) const
@@ -254,7 +293,7 @@ class AVL{
 
 
 
-// balancing
+// functions that help to keep the tree balanced
     Node* balance (Node* node) {
         int factor = getBalanceFactor(node);
         if (factor > 1) {
@@ -287,10 +326,7 @@ class AVL{
     }
 
     int getBalanceFactor(Node* node){
-        int l_height = height(node->left);
-        int r_height = height(node->right);
-        int b_factor = l_height - r_height;
-        return b_factor;
+        return height(node->left)-height(node->right);
     }
 
 
