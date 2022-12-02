@@ -16,6 +16,9 @@
 #define WORLDCUP23A1_H_
 
 #include "wet1util.h"
+#include "AVL_TREE_TEMPLATE.h"
+#include "Team.h"
+#include "Player.h"
 
 class world_cup_t {
 private:
@@ -25,6 +28,10 @@ private:
     // meilleur joueur
     // arbre de tous les joueurs
     // arbre de toutes les equipes
+	AVL<int, Team *> teamsById;
+    AVL<int, Player *> playersById;
+    AVL<PlayerStats, Player *> playersByGoals;
+	Player* bestPlayer;
 	
 public:
 	// <DO-NOT-MODIFY> {

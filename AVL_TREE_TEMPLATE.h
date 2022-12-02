@@ -146,7 +146,7 @@ class AVL{
     }
 
 
-    T getData(Node* node) const
+    S getData(Node* node) const
     {
         return node->data;
     }
@@ -164,6 +164,94 @@ class AVL{
         else
             return findMin(node->left);
     }
+
+    Node* findMax(Node* node) const{
+        if(node == nullptr) {
+            return nullptr;
+        }
+        else if(node->right == nullptr)
+            return node;
+        else
+            return findMin(node->right);
+    }
+    
+    S dataOfTheMax() const{
+        return findMax(root)->data;
+    }
+/**************************************************************************************/
+
+    
+    S* getPreviousInorder(T* key) const{
+        if(key == nullptr){
+            return nullptr;
+        }
+        Node* nearestBefore = root;
+        Node* trackNode = root;
+        while(trackNode->key != key){
+            if (trackNode->key < key)
+            {
+                if(trackNode->key > nearestBefore->key){
+                    nearestBefore->key = trackNode->key;
+                }
+                trackNode = trackNode->right;
+            }
+            else{
+                trackNode = trackNode->left;
+            }
+            if(trackNode==nullptr){
+                return nullptr;
+            }
+        }
+        trackNode = trackNode->left;
+        while (trackNode->right)
+        {
+            trackNode = trackNode->right;
+        }
+        if (nearestBefore->key < trackNode->key){
+            return trackNode->data;
+        }
+        else
+        {
+            return nearestBefore->data;
+        }
+    }
+
+    S* getNextInorder(T* key)const{
+        if(key == nullptr){
+            return nullptr;
+        }
+        Node* nearestNext = root;
+        Node* trackNode = root;
+        while(trackNode->key != key){
+            if (trackNode->key < key)
+            {
+
+                trackNode = trackNode->right;
+            }
+            else{
+                if(trackNode->key < nearestNext->key){
+                    nearestNext->key = trackNode->key;
+                }
+                trackNode = trackNode->left;
+            }
+            if(trackNode==nullptr){
+                return nullptr;
+            }
+        }
+        trackNode = trackNode->next;
+        while (trackNode->left)
+        {
+            trackNode = trackNode->right;
+        }
+        if (nearestNext->key > trackNode->key){
+            return trackNode->data;
+        }
+        else
+        {
+            return nearestNext->data;
+        }
+    }
+
 
 
 // balancing
