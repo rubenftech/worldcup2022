@@ -43,12 +43,15 @@ void Team::removePlayer(Player *player){
     m_numOfPlayers--;
     updateBestPlayer();
 }
+
 int Team::getNumOfPlayer() const{
     return m_numOfPlayers;
 }
+
 void Team::addPoints(int pointsToAdd){
     m_points+=pointsToAdd;
 }
+
 int Team::getPoints() const{
     return m_points;
 }
@@ -56,6 +59,7 @@ int Team::getPoints() const{
 int Team::updateBestPlayer(){
     m_bestTeamPlayer = teamPlayersByGoals.dataOfTheMax();
 }
+
 int Team::updateBestPlayer(Player *player){
     m_bestTeamPlayer = player;
 }

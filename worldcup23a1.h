@@ -22,17 +22,11 @@
 
 class world_cup_t {
 private:
-	//
-	// Here you may add anything you want
-	//
-    // meilleur joueur
-    // arbre de tous les joueurs
-    // arbre de toutes les equipes
-	AVL<int, Team *> teamsById;
-    AVL<int, Player *> playersById;
-    AVL<PlayerStats, Player *> playersByGoals;
-	Player* bestPlayer;
-	
+    AVL<int , Team*> AVL_team_by_id;     // arbre de toutes les equipes key = id
+    AVL<int , Player*> AVL_all_players_by_id;     // arbre de tous les joueurs key = id
+    AVL<PlayerStats, Player*> AVL_all_players_by_goals; // arbre de tous les joueurs key = goal
+    Player* best_player_all = nullptr; // meilleur de tous les joueurs
+
 public:
 	// <DO-NOT-MODIFY> {
 	

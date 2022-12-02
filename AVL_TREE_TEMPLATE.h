@@ -11,17 +11,20 @@ using namespace std;
 
 template<class T, class S>
 class AVL{
-    private:
+    public:
         class Node{
+        public:
             T key;
-            S data;
             Node* left, right;
+            S data;
         };
+
+    private:
         Node* root;
         int size;
 
     public:
-    AVL(): root(NULL), size(0){} //c'tor
+    AVL(): root(NULL), size(0) {} //c'tor
 
     ~AVL(){ clearTree(); } //d'tor
 
@@ -127,13 +130,13 @@ class AVL{
         }
     }//recursive helper clear function
 
-    void ClearDataAndTree(){
+    void clearDataAndTree(){
         ClearDataAndTreeFunc(root);
         root = nullptr;
         size=0;
     }//remove all nodes deleting the data
 
-    void ClearDataAndTreeFunc (Node* node){
+    void clearDataAndTreeFunc (Node* node){
         if(node != nullptr){
             ClearDataAndTreeFunc(node->left);
             ClearDataAndTreeFunc(node->right);
@@ -185,8 +188,7 @@ class AVL{
 
 
 
-    S getData(Node* node) const
-    {
+    S getData(Node* node) const{
         return node->data;
     }
 
@@ -198,10 +200,12 @@ class AVL{
         if(node == nullptr) {
             return nullptr;
         }
-        else if(node->left == nullptr)
+        else if(node->left == nullptr){
             return node;
-        else
+        }
+        else{
             return findMin(node->left);
+        }
     }
 
     Node* findMax(Node* node) const{
@@ -211,7 +215,7 @@ class AVL{
         else if(node->right == nullptr)
             return node;
         else
-            return findMin(node->right);
+            return findMax(node->right);
     }
     
     S dataOfTheMax() const{
@@ -227,8 +231,7 @@ class AVL{
         Node* nearestBefore = root;
         Node* trackNode = root;
         while(trackNode->key != key){
-            if (trackNode->key < key)
-            {
+            if (trackNode->key < key){
                 if(trackNode->key > nearestBefore->key){
                     nearestBefore->key = trackNode->key;
                 }
@@ -242,15 +245,13 @@ class AVL{
             }
         }
         trackNode = trackNode->left;
-        while (trackNode->right)
-        {
+        while (trackNode->right){
             trackNode = trackNode->right;
         }
         if (nearestBefore->key < trackNode->key){
             return trackNode->data;
         }
-        else
-        {
+        else{
             return nearestBefore->data;
         }
     }
@@ -262,9 +263,7 @@ class AVL{
         Node* nearestNext = root;
         Node* trackNode = root;
         while(trackNode->key != key){
-            if (trackNode->key < key)
-            {
-
+            if (trackNode->key < key){
                 trackNode = trackNode->right;
             }
             else{
@@ -278,22 +277,21 @@ class AVL{
             }
         }
         trackNode = trackNode->next;
-        while (trackNode->left)
-        {
+        while (trackNode->left){
             trackNode = trackNode->right;
         }
         if (nearestNext->key > trackNode->key){
             return trackNode->data;
         }
-        else
-        {
+        else{
             return nearestNext->data;
         }
     }
 
 
 
-// functions that help to keep the tree balanced
+/* functions that help to keep the tree balanced */
+
     Node* balance (Node* node) {
         int factor = getBalanceFactor(node);
         if (factor > 1) {

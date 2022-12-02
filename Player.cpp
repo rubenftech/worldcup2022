@@ -30,29 +30,33 @@ bool operator>(const PlayerStats& player1, const PlayerStats& player2){
     }
     return(player1.m_playerId > player2.m_playerId);
 }
+
 bool operator<(const PlayerStats& player1, const PlayerStats& player2){
     return !(player1 > player2);
 }
+
 bool operator==(const PlayerStats& player1, const PlayerStats& player2){
     return(player1.m_playerId == player2.m_playerId);
 }
+
 bool operator!=(const PlayerStats& player1, const PlayerStats& player2){
     return !(player1==player2);
 }
 
-Player::Player(int playerId, int gamesPlayed, int goals, int cards, bool goalKeeper):m_playerId(playerId),
+Player::Player(int playerId, int teamId, int gamesPlayed, int goals, int cards, bool goalKeeper):m_playerId(playerId),
+                                                                                    m_teamId(teamId),
                                                                                     m_gamePlayed(gamesPlayed),
                                                                                     m_goals(goals),
                                                                                     m_cards(cards),
                                                                                     m_goalKeeper(goalKeeper),
                                                                                     m_previousInRank(nullptr),
-                                                                                    m_nextInRank(nullptr)
-{}
+                                                                                    m_nextInRank(nullptr){}
 
 int Player::getId() const{
     return m_playerId;
 }
-void Player::addGames(int newGames = 1){
+
+void Player::addGames(int newGames){
     if (newGames > 0){
     m_gamePlayed+= newGames;
     }
@@ -60,39 +64,49 @@ void Player::addGames(int newGames = 1){
 int Player::getGames() const{
     return m_gamePlayed;
 }
+
 void Player::addGoals(int newGoals){
     if (newGoals > 0){
         m_gamePlayed+= newGoals;
     }
 }
+
 int Player::getGoals() const{
     return m_goals;
 }
+
 void Player::addCards(int newCards){
     if (newCards > 0){
         m_gamePlayed+= newCards;
     }
 }
+
 int Player::getCards() const{
     return m_cards;
 }
+
 bool Player::isGoalKeeper() const{
     return m_goalKeeper;
 }
+
 void Player::updatePreviousInRank(AVL<PlayerStats, Player> rankedTree){
     PlayerStats keyInRankedTree(m_goals, m_cards, m_playerId);
     m_previousInRank = rankedTree.getPreviousInorder(&keyInRankedTree);   
 }
+
 Player* Player::GetpreviousInRank() const{
     return m_previousInRank;
 }
-void Player::updatePreviousInRank(AVL<PlayerStats, Player> rankedTree){
+
+void Player::updateNextInRank(AVL<PlayerStats, Player> rankedTree){
     PlayerStats keyInRankedTree(m_goals, m_cards, m_playerId);
-    m_previousInRank = rankedTree.getNextInorder(&keyInRankedTree);  
+    m_nextInRank = rankedTree.getNextInorder(&keyInRankedTree);
 }
+
 Player* Player::GetNextInRank() const{
     return m_nextInRank;
 }
+
 PlayerStats Player::getPlayerStats()const{
     return PlayerStats(m_goals, m_cards, m_playerId);
 }

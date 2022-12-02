@@ -1,8 +1,7 @@
 
 #include"Player.h"
 
-class Team
-{
+class Team{
 public:
     Team(int team_id, int team_points);
     ~Team();
@@ -16,9 +15,9 @@ public:
 
 
 private:
-    AVL<int, Player *> teamPlayersById;
-    AVL<PlayerStats, Player *> teamPlayersByGoals;
+    AVL<int, Player*> teamPlayersById;
+    AVL<PlayerStats, Player*> teamPlayersByGoals;
     int m_numOfPlayers;
     int m_points;
-    Player *m_bestTeamPlayer;
+    Player* m_bestTeamPlayer;
 };

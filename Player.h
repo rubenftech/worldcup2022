@@ -15,9 +15,11 @@ public:
 
 bool operator<(const PlayerStats& player1, const PlayerStats& player2);
 bool operator!=(const PlayerStats& player1, const PlayerStats& player2);
+
+
 class Player{
 public:
-    Player(int playerId, int gamesPlayed, int goals, int cards, bool goalKeeper);
+    Player(int playerId, int teamId, int gamesPlayed, int goals, int cards, bool goalKeeper);
     ~Player() = default;
     int getId()const;
     void addGames(int newGames = 1);
@@ -29,12 +31,13 @@ public:
     bool isGoalKeeper() const;
     void updatePreviousInRank(AVL<PlayerStats, Player> rankedTree);
     Player* GetpreviousInRank()const;
-    void updateNextInRank();
+    void updateNextInRank(AVL<PlayerStats, Player> rankedTree);
     Player* GetNextInRank()const;
     PlayerStats getPlayerStats()const;
 
 private:
     const int m_playerId;
+    int m_teamId;
     int m_gamePlayed;
     int m_goals;
     int m_cards;
@@ -43,5 +46,6 @@ private:
     Player* m_nextInRank;
 
 };
-Player* findPreviousInRank;
+
+Player* findPreviousInRank;  //??
 #endif //PLAYER_H_

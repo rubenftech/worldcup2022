@@ -1,38 +1,78 @@
 #include "worldcup23a1.h"
 
-world_cup_t::world_cup_t()
-{
-	// TODO: Your code goes here
+world_cup_t::world_cup_t(){
+    AVL_team_by_id = AVL<int, Team*>();
+    AVL_all_players_by_id = AVL<int, Player*>();
+    AVL_all_players_by_goals = AVL<PlayerStats, Player*>();
+} // The 3 Trees are initialisized, best_player_all is NULL
+
+world_cup_t::~world_cup_t(){
+    AVL_team_by_id.clearTree(); // il faut supprimer les ARBRES DE JOUEURS
+    AVL_all_players_by_goals.clearTree();
+    AVL_all_players_by_id.clearDataAndTree();
 }
 
-world_cup_t::~world_cup_t()
-{
-	// TODO: Your code goes here
-}
 
+StatusType world_cup_t::add_team(int teamId, int points){
+    if (teamId<=0 || points<0){
+        return StatusType::INVALID_INPUT;
+    }
+    if( AVL_team_by_id.find(teamId)){
+       return StatusType::FAILURE;
+    }
+    Team* new_team = nullptr;
+    try {
+        new_team = new Team(teamId, points);
+    } catch (std::bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
 
-StatusType world_cup_t::add_team(int teamId, int points)
-{
-	// TODO: Your code goes here
+    AVL_team_by_id.insert(teamId, new_team);
 	return StatusType::SUCCESS;
 }
 
-StatusType world_cup_t::remove_team(int teamId)
-{
-	// TODO: Your code goes here
+StatusType world_cup_t::remove_team(int teamId){
+    if (teamId<=0){
+    return StatusType::INVALID_INPUT;
+    }
+    AVL<int, Team*>::Node* to_delete = AVL_team_by_id.find(teamId);
+    if (to_delete){
+        AVL_team_by_id.remove(teamId);
+    }
 	return StatusType::FAILURE;
 }
 
+
 StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
-                                   int goals, int cards, bool goalKeeper)
-{
-	// TODO: Your code goes here
+                                   int goals, int cards, bool goalKeeper){
+    if(playerId<=0||teamId<=0||gamesPlayed<0||goals<0||cards<0||((gamesPlayed=0)&&(cards>0||goals>0))){
+        return StatusType::INVALID_INPUT;
+    }
+    if (!AVL_team_by_id.find(teamId)||AVL_team_by_id.find(playerId)){
+        return StatusType::FAILURE;
+    }
+    Player* player_to_add = nullptr;
+    try{
+        Player* new_player = new Player(playerId,teamId,gamesPlayed,goals,cards,goalKeeper);
+    } catch (std::bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+    AVL_all_players_by_id.insert(player_to_add->getId(), player_to_add);
+    AVL_all_players_by_goals.insert(player_to_add->getPlayerStats(), player_to_add);
+    AVL_team_by_id.find(teamId).data->addPlayer(player_to_add);
 	return StatusType::SUCCESS;
 }
 
+
 StatusType world_cup_t::remove_player(int playerId)
 {
-	// TODO: Your code goes here
+    if(playerId<=0){
+        return StatusType::INVALID_INPUT;
+    }
+    if(!AVL_all_players_by_id.find(playerId)){
+        return StatusType::FAILURE;
+    }
+    //AVL_all_players_by_id.find(playerId)->data->
 	return StatusType::SUCCESS;
 }
 
