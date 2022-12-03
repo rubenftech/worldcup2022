@@ -2,6 +2,7 @@
 #define PLAYER_H_
 #include "AVL_TREE_TEMPLATE.h"
 
+class Team;
 
 class PlayerStats{
 private: 
@@ -31,7 +32,7 @@ public:
     void addCards(int newCards);
     int getCards() const;
     bool isGoalKeeper() const;
-    Team putTeam(Team*);
+    void putTeam(Team*);
     void updatePreviousInRank(AVL<PlayerStats, Player> rankedTree);
     Player* GetpreviousInRank()const;
     Player* GetNextInRank()const;
