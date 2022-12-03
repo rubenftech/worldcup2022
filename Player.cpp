@@ -61,13 +61,13 @@ void Player::addGames(int newGames){
     m_gamePlayed+= newGames;
     }
 }
-int Player::getGames() const{
-    return m_gamePlayed;
+int Player::getNumGames() const{
+    return m_gamePlayed + m_team_ptr->get_game_played();
 }
 
 void Player::addGoals(int newGoals){
     if (newGoals > 0){
-        m_gamePlayed+= newGoals;
+        m_goals+= newGoals;
     }
 }
 
@@ -77,7 +77,7 @@ int Player::getGoals() const{
 
 void Player::addCards(int newCards){
     if (newCards > 0){
-        m_gamePlayed+= newCards;
+        m_cards+= newCards;
     }
 }
 
@@ -110,3 +110,9 @@ Player* Player::GetNextInRank() const{
 PlayerStats Player::getPlayerStats()const{
     return PlayerStats(m_goals, m_cards, m_playerId);
 }
+
+void Player::putTeam(Team* team) {
+    m_team_ptr = team;
+}
+
+

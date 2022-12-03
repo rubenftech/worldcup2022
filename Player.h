@@ -1,6 +1,10 @@
 #ifndef PLAYER_H_
 #define PLAYER_H_
 #include "AVL_TREE_TEMPLATE.h"
+
+#include"Player.h"
+
+
 class PlayerStats{
 private: 
     int m_goals;
@@ -23,16 +27,17 @@ public:
     ~Player() = default;
     int getId()const;
     void addGames(int newGames = 1);
-    int getGames() const;
+    int getNumGames() const;
     void addGoals(int newGoals);
     int getGoals() const;
     void addCards(int newCards);
     int getCards() const;
     bool isGoalKeeper() const;
+    Team putTeam(Team*);
     void updatePreviousInRank(AVL<PlayerStats, Player> rankedTree);
     Player* GetpreviousInRank()const;
-    void updateNextInRank(AVL<PlayerStats, Player> rankedTree);
     Player* GetNextInRank()const;
+    void updateNextInRank(AVL<PlayerStats, Player> rankedTree);
     PlayerStats getPlayerStats()const;
 
 private:
@@ -42,6 +47,7 @@ private:
     int m_goals;
     int m_cards;
     const bool m_goalKeeper;
+    Team* m_team_ptr;
     Player* m_previousInRank;
     Player* m_nextInRank;
 

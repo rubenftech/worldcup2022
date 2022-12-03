@@ -8,22 +8,21 @@
 #include <iostream>
 using namespace std;
 
+template<class T, class S>
+class Node{
+public:
+    T key;
+    S data;
+    Node* left, right;
+};
 
 template<class T, class S>
 class AVL{
     public:
-        class Node{
-        public:
-            T key;
-            Node* left, right;
-            S data;
-        };
+    Node<T,S>* root;
+    int size;
 
-    private:
-        Node* root;
-        int size;
 
-    public:
     AVL(): root(NULL), size(0) {} //c'tor
 
     ~AVL(){ clearTree(); } //d'tor
@@ -34,9 +33,9 @@ class AVL{
         size++;
     } //insert the node in his place in the AVL tree, keeping it balanced
 
-    Node* insertFunc(Node* node, T key,S data){
+    Node<T,S>* insertFunc(Node<T,S>* node, T key,S data){
         if (node == nullptr) {
-            node = new Node;
+            node = new Node<T,S>;
             node->key = key;
             node->data = data;
             node->left = nullptr;
@@ -53,11 +52,11 @@ class AVL{
     }
 
 
-    Node* find(T key){
+    Node<T,S>* find(T key){
         return findFunc(root,key);
     } // Find a node according to his key
 
-    Node* findFunc(Node* node,T &key) const{
+    Node<T,S>* findFunc(Node<T,S>* node,T &key) const{
         if (node == nullptr){
             return nullptr;
         }
@@ -78,8 +77,8 @@ class AVL{
         size--;
     } // remove a node accroding to his key
 
-    Node* removeFunc(Node* node, T key){
-        Node* tmp;
+    Node<T,S>* removeFunc(Node<T,S>* node, T key){
+        Node<T,S>* tmp;
 
         if (node == nullptr){ //not found
             return nullptr;
@@ -122,7 +121,7 @@ class AVL{
         size = 0;
     }//remove all nodes without deleting the data
 
-    void clearTreeFunc(Node* node) {
+    void clearTreeFunc(Node<T,S>* node) {
         if (node != nullptr) {
             clearTreeFunc(node->left);
             clearTreeFunc(node->right);
@@ -136,7 +135,7 @@ class AVL{
         size=0;
     }//remove all nodes deleting the data
 
-    void clearDataAndTreeFunc (Node* node){
+    void clearDataAndTreeFunc (Node<T,S>* node){
         if(node != nullptr){
             ClearDataAndTreeFunc(node->left);
             ClearDataAndTreeFunc(node->right);
@@ -146,7 +145,7 @@ class AVL{
     }// recursive helper clear tree and data
 
 
-    void inorderFunc(Node* node){
+    void inorderFunc(Node<T,S>* node){
         if (node == NULL){
             return;
         }
@@ -160,7 +159,7 @@ class AVL{
         AVL_to_array_inorder_helper(root,arr,i);
     }
 
-    void AVL_to_array_inorder_helper(Node* firstNode,T **arr, int* i){
+    void AVL_to_array_inorder_helper(Node<T,S>* firstNode,T **arr, int* i){
         if(firstNode== nullptr){
             return;
         }
@@ -175,7 +174,7 @@ class AVL{
         array_to_AVL_inorder_helper(root,arrKey,arrData,i);
     }
 
-    void array_to_AVL_inorder_helper(Node* firstNode,T ** arrKey,S **arrData, int* i){
+    void array_to_AVL_inorder_helper(Node<T,S>* firstNode,T ** arrKey,S **arrData, int* i){
         if(firstNode== nullptr){
             return;
         }
@@ -188,7 +187,7 @@ class AVL{
 
 
 
-    S getData(Node* node) const{
+    S getData(Node<T,S>* node) const{
         return node->data;
     }
 
@@ -196,7 +195,7 @@ class AVL{
         return size;
     }
 
-    Node* findMin(Node* node) const{
+    Node<T,S>* findMin(Node<T,S>* node) const{
         if(node == nullptr) {
             return nullptr;
         }
@@ -208,7 +207,7 @@ class AVL{
         }
     }
 
-    Node* findMax(Node* node) const{
+    Node<T,S>* findMax(Node<T,S>* node) const{
         if(node == nullptr) {
             return nullptr;
         }
@@ -228,8 +227,8 @@ class AVL{
         if(key == nullptr){
             return nullptr;
         }
-        Node* nearestBefore = root;
-        Node* trackNode = root;
+        Node<T,S>* nearestBefore = root;
+        Node<T,S>* trackNode = root;
         while(trackNode->key != key){
             if (trackNode->key < key){
                 if(trackNode->key > nearestBefore->key){
@@ -260,8 +259,8 @@ class AVL{
         if(key == nullptr){
             return nullptr;
         }
-        Node* nearestNext = root;
-        Node* trackNode = root;
+        Node<T,S>* nearestNext = root;
+        Node<T,S>* trackNode = root;
         while(trackNode->key != key){
             if (trackNode->key < key){
                 trackNode = trackNode->right;
@@ -292,7 +291,7 @@ class AVL{
 
 /* functions that help to keep the tree balanced */
 
-    Node* balance (Node* node) {
+    Node<T,S>* balance (Node<T,S>* node) {
         int factor = getBalanceFactor(node);
         if (factor > 1) {
             if (getBalanceFactor(node->left) > 0) {
@@ -312,7 +311,7 @@ class AVL{
         return node;
     }
 
-    int height(Node* node) const{
+    int height(Node<T,S>* node) const{
         int h =0;
         if (node != nullptr){
             int l_height = height(node->left);
@@ -323,54 +322,42 @@ class AVL{
         return h;
     }
 
-    int getBalanceFactor(Node* node){
+    int getBalanceFactor(Node<T,S>* node){
         return height(node->left)-height(node->right);
     }
 
 
-    Node * rr_rotation(Node* father){
-        Node* node;
+    Node<T,S> * rr_rotation(Node<T,S>* father){
+        Node<T,S>* node;
         node = father->right;
         father->right = node->left;
         node->left = father;
         return node;
     }
 
-    Node * rl_rotation(Node *father){
-        Node* node;
+    Node<T,S> * rl_rotation(Node<T,S> *father){
+        Node<T,S>* node;
         node = father->right;
         father->right = ll_rotate(node);
         return rr_rotation(father);
     }
 
-    Node * lr_rotation(Node* father){
-        Node* node;
+    Node<T,S> * lr_rotation(Node<T,S>* father){
+        Node<T,S>* node;
         node = father->left;
         father->left = rr_rotate(node);
         return ll_rotation(father);
     }
 
-    Node * ll_rotation(Node *parent){
-        Node* node;
+    Node<T,S> * ll_rotation(Node<T,S> *parent){
+        Node<T,S>* node;
         node = parent->left;
         parent->left = node->right;
         node->right = parent;
         return node;
     }
 
-
-
 };
-
-
-
-
-
-
-
-
-
-
 
 
 
