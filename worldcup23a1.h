@@ -29,7 +29,10 @@ private:
 	int num_of_players;
 
 public:
-	// <DO-NOT-MODIFY> {
+    Player** mergeId(Player**, Player**,int, int);
+    Player **mergeGoal(Player **arrayTeam1, Player **arrayTeam2, int player, int player1);
+
+    // <DO-NOT-MODIFY> {
 	
 	world_cup_t();
 	virtual ~world_cup_t();

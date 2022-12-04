@@ -1,17 +1,13 @@
 #include"Team.h"
 
-/*
-    AVL<int, Player *> teamPlayersById;
-    AVL<PlayerStats, Player *> teamPlayersByGoals;
-    int numOfPlayers;
-    int points;
-    Player *bestTeamPlayer;
 
-*/
-Team::Team(int team_id, int team_points):teamPlayersById(*new AVL<int, Player*>),
+Team::Team(int team_id, int team_points, int numOfPlayers, int goal, int cards):teamPlayersById(*new AVL<int, Player*>),
                                         teamPlayersByGoals(*new AVL<PlayerStats, Player*>),
-                                        m_numOfPlayers(0),
+                                        m_team_id(team_id),
                                         m_points(team_points),
+                                        m_numOfPlayers(numOfPlayers),
+                                        m_total_goal(goal),
+                                        m_total_cards(cards),
                                         m_bestTeamPlayer(nullptr){};
 
 
@@ -54,7 +50,7 @@ void Team::addPoints(int pointsToAdd){
     m_points+=pointsToAdd;
 }
 
-void Team::addPlayedgame(){
+void Team::addPlayedGame(){
     m_game_played++;
 }
 
@@ -71,8 +67,8 @@ int Team::updateBestPlayer(Player *player){
 }
 
 bool operator>(const Team &team1, const Team &team2) {
-    if (team1.getPoints()+team1.getTotalGoal()-team1.getTotalcards()>
-                team2.getPoints()+team2.getTotalGoal()-team2.getTotalcards()){
+    if (team1.getPoints()+team1.getTotalGoal()-team1.getTotalCards()>
+                team2.getPoints()+team2.getTotalGoal()-team2.getTotalCards()){
         return true;
     }
     return false;
@@ -82,7 +78,7 @@ int Team::get_game_played() const {
     return m_game_played;
 }
 
-int Team::getTotalcards() const {
+int Team::getTotalCards() const {
     return m_total_cards;
 }
 
@@ -93,10 +89,18 @@ Player* Team::getBestPlayer() const{
     return m_bestTeamPlayer;
 }
 
-AVL<int, Player*>* Team::getAvlteamPlayersById(){
+AVL<int, Player*>* Team::getAvlTeamPlayersById(){
 
     return (&teamPlayersById);
 }
-AVL<PlayerStats, Player*>* Team::getAvlteamPlayersByGoals(){
+AVL<PlayerStats, Player*>* Team::getAvlTeamPlayersByGoals(){
     return (&teamPlayersByGoals);
+}
+
+void Team::putAVLid(AVL<int,Player*> tree ) {
+    teamPlayersById=tree;
+}
+
+void Team::putAVLGoal(AVL<PlayerStats, Player *> tree) {
+    teamPlayersByGoals=tree;
 }
