@@ -35,10 +35,12 @@ public:
     void setTeam(Team* teamPtr);
     Team* getTeam();
     void updatePreviousInRank(AVL<PlayerStats, Player*> rankedTree);
-    Player* GetPreviousInRank()const;
-    Player* GetNextInRank()const;
+    Player* getPreviousInRank()const;
+    Player* getNextInRank()const;
     void updateNextInRank(AVL<PlayerStats, Player*> rankedTree);
     PlayerStats getPlayerStats()const;
+    int getClosest();
+
 
 private:
     const int m_playerId;

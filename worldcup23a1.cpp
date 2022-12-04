@@ -159,17 +159,17 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     Player** arr_player_newTeam_byId = mergeId (arr_player_team1_byId,arr_player_team2byId, team1->getNumOfPlayer(), team2->getNumOfPlayer());
     Player** arr_player_newTeam_byGoals = mergeGoal(arr_player_team1_byGoals,arr_player_team2_byGoals,team1->getNumOfPlayer(), team2->getNumOfPlayer());
 
-    Team* newTeam= new(Team(newTeamId, team1->getPoints()+team2->getPoints(), //create the new team
+    Team* newTeam = new (Team(newTeamId, team1->getPoints()+team2->getPoints(), //create the new team
                            team1->getNumOfPlayer()+team2->getNumOfPlayer(),
-                            team1->getTotalGoal()+team2->getTotalGoal()),
-                       team1->getTotalCards() + team2->getTotalCards());
+                            team1->getTotalGoal()+team2->getTotalGoal(),
+                       team1->getTotalCards() + team2->getTotalCards()));
 
 
     AVL<int, Player*> AVLTeamId; // create the 2 new trees
     AVL<PlayerStats, Player*> AVLTeamGoal;
 
-    array_to_AVL_inorder(arr_player_newTeam_byId,AVLTeamId); // put the arrays into trees
-    array_to_AVL_inorder(arr_player_newTeam_byGoals,AVLTeamGoal);
+    array_to_AVL_inorder(arr_player_newTeam_byId, AVLTeamId); // put the arrays into trees, fonction a ajuster dans AVL template ligne 175
+    array_to_AVL_inorder(arr_player_newTeam_byGoals, AVLTeamGoal);
 
     newTeam->putAVLid(AVLTeamId); //put the trees into the team
     newTeam->putAVLGoal(AVLTeamGoal);
@@ -238,8 +238,7 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output){
 }
 
 output_t<int> world_cup_t::get_closest_player(int playerId, int teamId){
-	// TODO: Your code goes here
-	return 1006;
+	return AVL_team_by_id.find(teamId)->data->getAvlTeamPlayersById()->find(playerId)->data->getClosest() ;
 }
 
 output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){

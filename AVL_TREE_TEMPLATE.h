@@ -172,7 +172,7 @@ class AVL{
 
 
 
-    void array_to_AVL_inorder(T **arrKey,S **arrData, int i){
+    void array_to_AVL_inorder(T **arrKey,S **arrData, int i){// changer la fonction
         array_to_AVL_inorder_helper(root,arrKey,arrData,i);
     }
 

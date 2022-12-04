@@ -94,7 +94,7 @@ void Player::updatePreviousInRank(AVL<PlayerStats, Player*> rankedTree){
     m_previousInRank = rankedTree.getPreviousInorder(keyInRankedTree);   
 }
 
-Player* Player::GetPreviousInRank() const{
+Player* Player::getPreviousInRank() const{
     return m_previousInRank;
 }
 
@@ -103,7 +103,7 @@ void Player::updateNextInRank(AVL<PlayerStats, Player*> rankedTree){
     m_nextInRank = rankedTree.getNextInorder(keyInRankedTree);
 }
 
-Player* Player::GetNextInRank() const{
+Player* Player::getNextInRank() const{
     return m_nextInRank;
 }
 
@@ -118,4 +118,13 @@ void Player::setTeam(Team* teamPtr) {
 
 Team *Player::getTeam() {
     return m_team_ptr;
+}
+
+int Player::getClosest() {
+    Player* playerNext= getNextInRank();
+    Player* playerPrevious= getPreviousInRank();
+// continuer la fonction
+    return 0;
+
+
 }

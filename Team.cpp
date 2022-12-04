@@ -104,3 +104,4 @@ void Team::putAVLid(AVL<int,Player*> tree ) {
 void Team::putAVLGoal(AVL<PlayerStats, Player *> tree) {
     teamPlayersByGoals=tree;
 }
+
