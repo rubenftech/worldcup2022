@@ -17,6 +17,8 @@ public:
     int updateBestPlayer();
     int updateBestPlayer(Player *player);
     Player* getBestPlayer()const;
+    AVL<int, Player*>* getAvlteamPlayersById();
+    AVL<PlayerStats, Player*>* getAvlteamPlayersByGoals();
 
 
 private:
