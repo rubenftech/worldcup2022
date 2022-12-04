@@ -96,10 +96,19 @@ StatusType world_cup_t::remove_player(int playerId)
 }
 
 StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
-                                            int scoredGoals, int cardsReceived)
-{
-    // TODO: Your code goes here
-    return StatusType::SUCCESS;
+                                        int scoredGoals, int cardsReceived){
+
+    if (playerId<=0||gamesPlayed<0||scoredGoals<0||cardsReceived<0){
+        return StatusType::INVALID_INPUT;
+    }
+    if (!AVL_all_players_by_id.find(playerId)){
+        return StatusType::FAILURE;
+    }
+    Player* playerToUpdate = AVL_all_players_by_id.find(playerId)->data;
+    playerToUpdate->addGames(gamesPlayed-playerToUpdate->getTeam()->get_game_played());
+    playerToUpdate->addGoals(scoredGoals);
+    playerToUpdate->addCards(cardsReceived);
+	return StatusType::SUCCESS;
 }
 
 StatusType world_cup_t::play_match(int teamId1, int teamId2)
@@ -228,14 +237,12 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output)
     }
 }
 
-output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
-{
-    // TODO: Your code goes here
-    return 1006;
+output_t<int> world_cup_t::get_closest_player(int playerId, int teamId){
+	// TODO: Your code goes here
+	return 1006;
 }
 
-output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
-{
-    // TODO: Your code goes here
-    return 2;
+output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
+	// TODO: Your code goes here
+	return 2;
 }
