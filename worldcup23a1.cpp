@@ -4,7 +4,7 @@ world_cup_t::world_cup_t(){
     AVL_team_by_id = AVL<int, Team*>();
     AVL_all_players_by_id = AVL<int , Player*>();
     AVL_all_players_by_goals = AVL<PlayerStats, Player*>();
-} // The 3 Trees are initialisized, best_player_all is NULL
+} // The 3 Trees are initialized, best_player_all is NULL
 
 world_cup_t::~world_cup_t(){
     AVL_team_by_id.clearTree(); // il faut supprimer les ARBRES DE JOUEURS
@@ -165,9 +165,14 @@ output_t<int> world_cup_t::get_all_players_count(int teamId)
 
 StatusType world_cup_t::get_all_players(int teamId, int *const output)
 {
-	// TODO: Your code goes here
-    output[0] = 4001;
-    output[1] = 4002;
+    if (teamId>0){
+    Team* team = AVL_team_by_id.find(teamId)->data;
+
+    AVL_to_array_inorder_helper(firstNode->left,arr,i);
+    (*arr)[*i]=firstNode->key;
+    (*i)++;
+    AVL_to_array_inorder_helper(firstNode->right,arr,i);
+
 	return StatusType::SUCCESS;
 }
 

@@ -94,7 +94,7 @@ void Player::updatePreviousInRank(AVL<PlayerStats, Player*> rankedTree){
     m_previousInRank = rankedTree.getPreviousInorder(keyInRankedTree);   
 }
 
-Player* Player::GetpreviousInRank() const{
+Player* Player::GetPreviousInRank() const{
     return m_previousInRank;
 }
 
