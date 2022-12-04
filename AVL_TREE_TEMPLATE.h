@@ -13,7 +13,8 @@ class Node{
 public:
     T key;
     S data;
-    Node* left, right;
+    Node* left;
+    Node* right;
 };
 
 template<class T, class S>

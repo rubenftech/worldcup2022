@@ -116,3 +116,6 @@ void Player::setTeam(Team* teamPtr) {
 }
 
 
+Team *Player::getTeam() {
+    return m_team_ptr;
+}

@@ -33,6 +33,7 @@ public:
     int getCards() const;
     bool isGoalKeeper() const;
     void setTeam(Team* teamPtr);
+    Team* getTeam();
     void updatePreviousInRank(AVL<PlayerStats, Player*> rankedTree);
     Player* GetPreviousInRank()const;
     Player* GetNextInRank()const;
