@@ -44,11 +44,11 @@ bool operator!=(const PlayerStats& player1, const PlayerStats& player2){
 }
 
 Player::Player(int playerId, int teamId, int gamesPlayed, int goals, int cards, bool goalKeeper):m_playerId(playerId),
-                                                                                    m_teamId(teamId),
                                                                                     m_gamePlayed(gamesPlayed),
                                                                                     m_goals(goals),
                                                                                     m_cards(cards),
                                                                                     m_goalKeeper(goalKeeper),
+                                                                                    m_team_ptr(nullptr),
                                                                                     m_previousInRank(nullptr),
                                                                                     m_nextInRank(nullptr){}
 
@@ -89,18 +89,18 @@ bool Player::isGoalKeeper() const{
     return m_goalKeeper;
 }
 
-void Player::updatePreviousInRank(AVL<PlayerStats, Player> rankedTree){
+void Player::updatePreviousInRank(AVL<PlayerStats, Player*> rankedTree){
     PlayerStats keyInRankedTree(m_goals, m_cards, m_playerId);
-    m_previousInRank = rankedTree.getPreviousInorder(&keyInRankedTree);   
+    m_previousInRank = rankedTree.getPreviousInorder(keyInRankedTree);   
 }
 
 Player* Player::GetpreviousInRank() const{
     return m_previousInRank;
 }
 
-void Player::updateNextInRank(AVL<PlayerStats, Player> rankedTree){
+void Player::updateNextInRank(AVL<PlayerStats, Player*> rankedTree){
     PlayerStats keyInRankedTree(m_goals, m_cards, m_playerId);
-    m_nextInRank = rankedTree.getNextInorder(&keyInRankedTree);
+    m_nextInRank = rankedTree.getNextInorder(keyInRankedTree);
 }
 
 Player* Player::GetNextInRank() const{
@@ -111,8 +111,8 @@ PlayerStats Player::getPlayerStats()const{
     return PlayerStats(m_goals, m_cards, m_playerId);
 }
 
-void Player::putTeam(Team* team) {
-    m_team_ptr = team;
+void Player::setTeam(Team* teamPtr) {
+    m_team_ptr = teamPtr;
 }
 
 

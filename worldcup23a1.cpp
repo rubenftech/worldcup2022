@@ -59,7 +59,9 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     }
     AVL_all_players_by_id.insert(player_to_add->getId(), player_to_add);
     AVL_all_players_by_goals.insert(player_to_add->getPlayerStats(), player_to_add);
-    AVL_team_by_id.find(teamId).data.addPlayer(player_to_add);
+    (AVL_team_by_id.find(teamId))->data->addPlayer(player_to_add);
+    player_to_add->updatePreviousInRank(AVL_all_players_by_goals);
+    player_to_add->updateNextInRank(AVL_all_players_by_goals);
 	return StatusType::SUCCESS;
 }
 
@@ -73,6 +75,7 @@ StatusType world_cup_t::remove_player(int playerId)
         return StatusType::FAILURE;
     }
     //AVL_all_players_by_id.find(playerId)->data->
+    // dont forget to update the closest players
 	return StatusType::SUCCESS;
 }
 
@@ -111,7 +114,7 @@ output_t<int> world_cup_t::get_num_played_games(int playerId){
     if (playerId<=0){
         return StatusType::INVALID_INPUT;
     }
-    Player* player= AVL_all_players_by_id.find(playerId).data;
+    Player* player= AVL_all_players_by_id.find(playerId)->data;
     if (player = nullptr){
         return StatusType::FAILURE;
     }
@@ -119,6 +122,7 @@ output_t<int> world_cup_t::get_num_played_games(int playerId){
 }
 
 output_t<int> world_cup_t::get_team_points(int teamId){
+    
     AVL_team_by_id.find(teamId)->data->getPoints();
 }
 
@@ -130,16 +134,34 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
 
 output_t<int> world_cup_t::get_top_scorer(int teamId)
 {
-	// TODO: Your code goes here
-	return 2008;
+    if(teamId == 0){
+        return StatusType::INVALID_INPUT;
+    }
+	if(teamId < 0){
+        return best_player_all->getId();
+    }
+    Team *team = AVL_team_by_id.find(teamId)->data;
+    if(!team || !team->getBestPlayer()){
+        return StatusType::FAILURE;
+    }
+    return team->getBestPlayer()->getId();
 }
 
 output_t<int> world_cup_t::get_all_players_count(int teamId)
 {
-	// TODO: Your code goes here
-    static int i = 0;
-    return (i++==0) ? 11 : 2;
+	if(teamId == 0){
+        return StatusType::INVALID_INPUT;
+    }
+	if(teamId < 0){
+        return get_num_played_games();
+    }
+    Team *team = AVL_team_by_id.find(teamId)->data;
+    if(!team){
+        return StatusType::FAILURE;
+    }
+    return team->get_game_played();
 }
+
 
 StatusType world_cup_t::get_all_players(int teamId, int *const output)
 {

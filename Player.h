@@ -31,16 +31,15 @@ public:
     void addCards(int newCards);
     int getCards() const;
     bool isGoalKeeper() const;
-    Team putTeam(Team*);
-    void updatePreviousInRank(AVL<PlayerStats, Player> rankedTree);
+    void setTeam(Team* teamPtr);
+    void updatePreviousInRank(AVL<PlayerStats, Player*> rankedTree);
     Player* GetpreviousInRank()const;
     Player* GetNextInRank()const;
-    void updateNextInRank(AVL<PlayerStats, Player> rankedTree);
+    void updateNextInRank(AVL<PlayerStats, Player*> rankedTree);
     PlayerStats getPlayerStats()const;
 
 private:
     const int m_playerId;
-    int m_teamId;
     int m_gamePlayed;
     int m_goals;
     int m_cards;
@@ -51,5 +50,4 @@ private:
 
 };
 
-Player* findPreviousInRank;  //??
 #endif //PLAYER_H_

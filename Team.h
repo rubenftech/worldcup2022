@@ -16,7 +16,7 @@ public:
     int get_game_played()const;
     int updateBestPlayer();
     int updateBestPlayer(Player *player);
-    bool operator >(const Team* team1, const Team* team2);
+    Player* getBestPlayer()const;
 
 
 private:
@@ -32,3 +32,4 @@ private:
 
 
 };
+bool operator>(const Team& team1, const Team& team2);

@@ -30,7 +30,7 @@ void Team::addPlayer(Player *player){
     teamPlayersByGoals.insert(player->getPlayerStats(), player);
     m_numOfPlayers++;
     player->addGames(-m_game_played);
-    player->putTeam(this);
+    player->setTeam(this);
     if(m_bestTeamPlayer==nullptr){
         m_bestTeamPlayer = player;
     }
@@ -70,7 +70,7 @@ int Team::updateBestPlayer(Player *player){
     m_bestTeamPlayer = player;
 }
 
-bool Team::operator>(const Team &team1, const Team &team2) {
+bool operator>(const Team &team1, const Team &team2) {
     if (team1.getPoints()+team1.getTotalGoal()-team1.getTotalcards()>
                 team2.getPoints()+team2.getTotalGoal()-team2.getTotalcards()){
         return true;
@@ -88,4 +88,7 @@ int Team::getTotalcards() const {
 
 int Team::getTotalGoal() const {
     return m_total_goal;
+}
+Player* Team::getBestPlayer() const{
+    return m_bestTeamPlayer;
 }

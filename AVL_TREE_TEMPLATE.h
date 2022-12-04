@@ -223,7 +223,7 @@ class AVL{
 /**************************************************************************************/
 
     
-    S* getPreviousInorder(T* key) const{
+    S getPreviousInorder(T key) const{
         if(key == nullptr){
             return nullptr;
         }
@@ -255,7 +255,7 @@ class AVL{
         }
     }
 
-    S* getNextInorder(T* key)const{
+    S getNextInorder(T key)const{
         if(key == nullptr){
             return nullptr;
         }
