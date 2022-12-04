@@ -155,16 +155,16 @@ class AVL{
 
     }//print node's data with in-order traversal
 
-    void AVL_to_array_inorder(T **arr, int* i){
+    void AVL_to_array_inorder(S *arr, int* i){
         AVL_to_array_inorder_helper(root,arr,i);
     }
 
-    void AVL_to_array_inorder_helper(Node<T,S>* firstNode,T **arr, int* i){
+    void AVL_to_array_inorder_helper(Node<T,S>* firstNode,S *arr, int* i){
         if(firstNode== nullptr){
             return;
         }
         AVL_to_array_inorder_helper(firstNode->left,arr,i);
-        (*arr)[*i]=firstNode->key;
+        (*arr)[*i]=firstNode->data;
         (*i)++;
         AVL_to_array_inorder_helper(firstNode->right,arr,i);
     }
