@@ -92,3 +92,11 @@ int Team::getTotalGoal() const {
 Player* Team::getBestPlayer() const{
     return m_bestTeamPlayer;
 }
+
+AVL<int, Player*>* Team::getAvlteamPlayersById(){
+
+    return (&teamPlayersById);
+}
+AVL<PlayerStats, Player*>* Team::getAvlteamPlayersByGoals(){
+    return (&teamPlayersByGoals);
+}

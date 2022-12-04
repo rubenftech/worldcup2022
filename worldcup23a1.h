@@ -26,6 +26,7 @@ private:
     AVL<int , Player*> AVL_all_players_by_id;     // arbre de tous les joueurs key = id
     AVL<PlayerStats, Player*> AVL_all_players_by_goals; // arbre de tous les joueurs key = goal
     Player* best_player_all = nullptr; // meilleur de tous les joueurs
+	int num_of_players;
 
 public:
 	// <DO-NOT-MODIFY> {
