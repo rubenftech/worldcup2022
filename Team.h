@@ -5,27 +5,30 @@ class Team{
 public:
     Team(int team_id, int team_points, int numOfPlayers=0, int goal=0, int cards=0);
     ~Team();
+
     void addPlayer(Player *player);
     void removePlayer(Player *player);
-    int getNumOfPlayer()const;
     void addPoints(int pointsToAdd);
     void addPlayedGame();
-    int getPoints()const;
-    int getTeamId()const;
-    int getTotalCards() const;
-    void addCards(int);
-    int getTotalGoal() const;
     void addGoals(int);
-    int get_game_played()const;
+    void addCards(int);
     void putAVLid(AVL<int,Player*>);
     void putAVLGoal(AVL<PlayerStats, Player*>);
-    int updateBestPlayer();
-    int updateBestPlayer(Player *player);
+    void updateBestPlayer();
+    void updateBestPlayer(Player *player);
     void addGoalKeeper(int def=1);
-    bool isValid();
+
+    int getTeamId()const;
+    int getPoints()const;
+    int getNumOfPlayer()const;
+    int getTotalGoal() const;
+    int getTotalCards() const;
+    int get_game_played()const;
     Player* getBestPlayer()const;
+    bool isValid();
     AVL<int, Player*>* getAvlTeamPlayersById();
     AVL<PlayerStats, Player*>* getAvlTeamPlayersByGoals();
+
 
 private:
     AVL<int, Player*> teamPlayersById;

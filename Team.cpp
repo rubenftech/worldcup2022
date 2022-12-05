@@ -27,7 +27,6 @@ void Team::addPlayer(Player *player){
     if (player->isGoalKeeper()){
         addGoalKeeper();
     }
-    m_numOfPlayers++;
     player->addGames(-m_game_played);
     player->setTeam(this);
     if(m_bestTeamPlayer==nullptr){
@@ -36,17 +35,21 @@ void Team::addPlayer(Player *player){
     else if(player->getPlayerStats() > m_bestTeamPlayer->getPlayerStats()){
         m_bestTeamPlayer = player;
     }
+    m_numOfPlayers++;
+    addGoals(player->getGoals());
+    addCards(player->getCards());
 }
 
 void Team::removePlayer(Player *player){
     teamPlayersById.remove(player->getId());
     teamPlayersByGoals.remove(player->getPlayerStats());
-    m_numOfPlayers--;
     if (player->isGoalKeeper()){
         addGoalKeeper(-1);
     }
-    addCards(player->getCards());
-    addGoals(player->getCards());
+    addCards(- player->getCards());
+    addGoals(- player->getGoals());
+    player->addGames(m_game_played);
+    m_numOfPlayers--;
     updateBestPlayer();
 }
 
@@ -66,11 +69,11 @@ int Team::getPoints() const{
     return m_points;
 }
 
-int Team::updateBestPlayer(){
+void Team::updateBestPlayer(){
     m_bestTeamPlayer = teamPlayersByGoals.dataOfTheMax();
 }
 
-int Team::updateBestPlayer(Player *player){
+void Team::updateBestPlayer(Player *player){
     m_bestTeamPlayer = player;
 }
 

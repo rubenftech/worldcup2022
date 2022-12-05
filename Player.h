@@ -24,20 +24,22 @@ class Player{
 public:
     Player(int playerId, int teamId, int gamesPlayed, int goals, int cards, bool goalKeeper);
     ~Player() = default;
-    int getId()const;
+
     void addGames(int newGames = 1);
-    int getNumGames() const;
     void addGoals(int newGoals);
-    int getGoals() const;
     void addCards(int newCards);
-    int getCards() const;
-    bool isGoalKeeper() const;
     void setTeam(Team* teamPtr);
-    Team* getTeam();
     void updatePreviousInRank(AVL<PlayerStats, Player*> rankedTree);
+    void updateNextInRank(AVL<PlayerStats, Player*> rankedTree);
+
+    int getId()const;
+    int getNumGames() const;
+    int getCards() const;
+    int getGoals() const;
+    Team* getTeam();
+    bool isGoalKeeper() const;
     Player* getPreviousInRank()const;
     Player* getNextInRank()const;
-    void updateNextInRank(AVL<PlayerStats, Player*> rankedTree);
     PlayerStats getPlayerStats()const;
     int getClosest();
 

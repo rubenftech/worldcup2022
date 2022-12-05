@@ -1,5 +1,6 @@
 #include "worldcup23a1.h"
 
+
 world_cup_t::world_cup_t(){
     AVL_team_by_id = AVL<int, Team *>();
     AVL_all_players_by_id = AVL<int, Player *>();
@@ -7,11 +8,14 @@ world_cup_t::world_cup_t(){
     AVL_valid_team = AVL<int , Team*>();
 }
 
+
 world_cup_t::~world_cup_t(){
     AVL_team_by_id.clearTree(); // il faut supprimer les ARBRES DE JOUEURS
     AVL_all_players_by_goals.clearTree();
+    AVL_valid_team.clearTree();
     AVL_all_players_by_id.clearDataAndTree();
 }
+
 
 StatusType world_cup_t::add_team(int teamId, int points){
     if (teamId <= 0 || points < 0){
@@ -27,10 +31,10 @@ StatusType world_cup_t::add_team(int teamId, int points){
     catch (std::bad_alloc &e){
         return StatusType::ALLOCATION_ERROR;
     }
-
     AVL_team_by_id.insert(teamId, new_team);
     return StatusType::SUCCESS;
 }
+
 
 StatusType world_cup_t::remove_team(int teamId){
     if (teamId <= 0){
@@ -38,10 +42,14 @@ StatusType world_cup_t::remove_team(int teamId){
     }
     Node<int, Team *> *to_delete = AVL_team_by_id.find(teamId);
     if (to_delete){
+        if (to_delete->data->isValid()){
+            AVL_team_by_id.remove(teamId);
+        }
         AVL_team_by_id.remove(teamId);
     }
     return StatusType::FAILURE;
 }
+
 
 StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
                                    int goals, int cards, bool goalKeeper){
@@ -71,12 +79,10 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
 }
 
 StatusType world_cup_t::remove_player(int playerId){
-    if (playerId <= 0)
-    {
+    if (playerId <= 0){
         return StatusType::INVALID_INPUT;
     }
-    if (!AVL_all_players_by_id.find(playerId))
-    {
+    if (!AVL_all_players_by_id.find(playerId)){
         return StatusType::FAILURE;
     }
     Player* player_to_remove= AVL_all_players_by_id.find(playerId)->data;
@@ -91,6 +97,7 @@ StatusType world_cup_t::remove_player(int playerId){
     return StatusType::SUCCESS;
 }
 
+
 StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
                                         int scoredGoals, int cardsReceived){
 
@@ -100,18 +107,22 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
     if (!AVL_all_players_by_id.find(playerId)){
         return StatusType::FAILURE;
     }
+
     Player* playerToUpdate = AVL_all_players_by_id.find(playerId)->data;
     playerToUpdate->addGames(gamesPlayed-playerToUpdate->getTeam()->get_game_played());
-    playerToUpdate->addGoals(scoredGoals);
-    playerToUpdate->addCards(cardsReceived);
+    playerToUpdate->addGoals(scoredGoals-playerToUpdate->getGoals());
+    playerToUpdate->getTeam()->addGoals(scoredGoals-playerToUpdate->getGoals());
+    playerToUpdate->addCards(cardsReceived-playerToUpdate->getCards());
+    playerToUpdate->getTeam()->addCards(scoredGoals-playerToUpdate->getCards());
+    playerToUpdate->updatePreviousInRank(AVL_all_players_by_goals);
+    playerToUpdate->updateNextInRank(AVL_all_players_by_goals);
+    playerToUpdate->getTeam()->updateBestPlayer();
 	return StatusType::SUCCESS;
-
-    // verifier equipe cacher
 }
 
+
 StatusType world_cup_t::play_match(int teamId1, int teamId2){
-    if (teamId2 <= 0 || teamId1 <= 0 || teamId1 == teamId2)
-    {
+    if (teamId2 <= 0 || teamId1 <= 0 || teamId1 == teamId2){
         return StatusType::INVALID_INPUT;
     }
     Team *team1 = AVL_team_by_id.find(teamId1)->data;
@@ -134,6 +145,7 @@ StatusType world_cup_t::play_match(int teamId1, int teamId2){
     return StatusType::SUCCESS;
 }
 
+
 output_t<int> world_cup_t::get_num_played_games(int playerId){
     if (playerId <= 0){
         return StatusType::INVALID_INPUT;
@@ -145,9 +157,11 @@ output_t<int> world_cup_t::get_num_played_games(int playerId){
     return player->getNumGames()+ player->getTeam()->get_game_played();
 }
 
+
 output_t<int> world_cup_t::get_team_points(int teamId){
     AVL_team_by_id.find(teamId)->data->getPoints();
 }
+
 
 StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     if (teamId1 <= 0||teamId2 <= 0|| teamId1==teamId2||newTeamId <= 0){
@@ -189,8 +203,9 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     newTeam->putAVLid(AVLTeamId); //put the trees into the team
     newTeam->putAVLGoal(AVLTeamGoal);
 
-    // verifier equipe cacher et ajouter a avlvalid team
-
+    if (!AVL_valid_team.find(newTeam->getTeamId()) && AVL_team_by_id.find(newTeam->isValid())){
+            AVL_valid_team.insert(newTeam->getTeamId(), newTeam);
+        }
 
     AVL_team_by_id.insert(newTeamId, newTeam);
     AVL_team_by_id.remove(teamId1);
@@ -198,6 +213,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
 
     return StatusType::SUCCESS;
 }
+
 
 output_t<int> world_cup_t::get_top_scorer(int teamId){
     if (teamId == 0){
@@ -213,6 +229,7 @@ output_t<int> world_cup_t::get_top_scorer(int teamId){
     return team->getBestPlayer()->getId();
 }
 
+
 output_t<int> world_cup_t::get_all_players_count(int teamId){
     if (teamId == 0){
         return StatusType::INVALID_INPUT;
@@ -226,6 +243,7 @@ output_t<int> world_cup_t::get_all_players_count(int teamId){
     }
     return team->getNumOfPlayer();
 }
+
 
 StatusType world_cup_t::get_all_players(int teamId, int *const output){
     if (teamId == 0 || output == nullptr){
@@ -254,16 +272,44 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output){
     }
 }
 
+
 output_t<int> world_cup_t::get_closest_player(int playerId, int teamId){
 	return AVL_team_by_id.find(teamId)->data->getAvlTeamPlayersById()->find(playerId)->data->getClosest() ;
 }
 
+
 output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
 
+    if (minTeamId<0|| maxTeamId<0||maxTeamId<minTeamId){
+        return StatusType::INVALID_INPUT;
+    }
+    Node<int, Team*>* nodeFirstTeam = nullptr;
+    while (nodeFirstTeam == nullptr && minTeamId < AVL_valid_team.dataOfTheMax()->getTeamId()){
+        nodeFirstTeam= AVL_valid_team.find(minTeamId);
+        minTeamId++;
+    }
+    if (nodeFirstTeam = nullptr){
+        return StatusType::FAILURE;
+    }
+    Team* firstTeam = AVL_valid_team.find(minTeamId)->data;
+    Node<int, Team*>* nodeLastTeam = nullptr;
+    while (maxTeamId>=minTeamId &&  AVL_valid_team.find(maxTeamId)==0){
+        AVL_valid_team.find(maxTeamId);
+        maxTeamId--;
+    }
+    Team* lastTeam = AVL_valid_team.find(maxTeamId)->data;
 
-	return 2;
+
+
+    /*cloner les r equipes dans un arbres
+     * inorder play match
+     * unit team if equipe perd
+     * retourne lequipe qui gagne
+     *
+     *
+     * */
+	return ;
 }
-
 
 
 Player **world_cup_t::mergeGoal (Player* arrayTeam1[], Player* arrayTeam2[], int sizeTeam1, int sizeTeam2) { // on lui donne deux tableaux de player
