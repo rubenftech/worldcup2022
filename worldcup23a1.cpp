@@ -105,6 +105,8 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
     playerToUpdate->addGoals(scoredGoals);
     playerToUpdate->addCards(cardsReceived);
 	return StatusType::SUCCESS;
+
+    // verifier equipe cacher
 }
 
 StatusType world_cup_t::play_match(int teamId1, int teamId2){
@@ -186,6 +188,8 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
 
     newTeam->putAVLid(AVLTeamId); //put the trees into the team
     newTeam->putAVLGoal(AVLTeamGoal);
+
+    // verifier equipe cacher et ajouter a avlvalid team
 
 
     AVL_team_by_id.insert(newTeamId, newTeam);
