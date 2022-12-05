@@ -1,16 +1,6 @@
 #include"Player.h"
 
-/*
- *  const int m_playerId;
-    int m_gamePlayed;
-    int m_goals;
-    int m_cards;
-    const bool m_goalKeeper;
-    Player* previousInRank;
-    Player* nextInRank;
 
- *
- */
 PlayerStats::PlayerStats(int goals, int cards, int id): m_goals(goals),
                                                         m_cards(cards),
                                                         m_playerId(id){}
@@ -62,7 +52,7 @@ void Player::addGames(int newGames){
     }
 }
 int Player::getNumGames() const{
-    return m_gamePlayed + m_team_ptr->get_game_played();
+    return m_gamePlayed;
 }
 
 void Player::addGoals(int newGoals){

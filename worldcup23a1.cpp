@@ -4,7 +4,8 @@ world_cup_t::world_cup_t(){
     AVL_team_by_id = AVL<int, Team *>();
     AVL_all_players_by_id = AVL<int, Player *>();
     AVL_all_players_by_goals = AVL<PlayerStats, Player *>();
-} // The 3 Trees are initialized, best_player_all is NULL
+    AVL_valid_team = AVL<int , Team*>();
+}
 
 world_cup_t::~world_cup_t(){
     AVL_team_by_id.clearTree(); // il faut supprimer les ARBRES DE JOUEURS
@@ -60,8 +61,12 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     AVL_all_players_by_id.insert(player_to_add->getId(), player_to_add);
     AVL_all_players_by_goals.insert(player_to_add->getPlayerStats(), player_to_add);
     (AVL_team_by_id.find(teamId))->data->addPlayer(player_to_add);
+    if  (AVL_team_by_id.find(teamId)->data->isValid()){
+        AVL_valid_team.insert(teamId,AVL_team_by_id.find(teamId)->data);
+    }
     player_to_add->updatePreviousInRank(AVL_all_players_by_goals);
     player_to_add->updateNextInRank(AVL_all_players_by_goals);
+    num_of_players++;
     return StatusType::SUCCESS;
 }
 
@@ -74,8 +79,15 @@ StatusType world_cup_t::remove_player(int playerId){
     {
         return StatusType::FAILURE;
     }
-    // AVL_all_players_by_id.find(playerId)->data->
-    //  dont forget to update the closest players
+    Player* player_to_remove= AVL_all_players_by_id.find(playerId)->data;
+    AVL_all_players_by_goals.remove(player_to_remove->getPlayerStats());
+    player_to_remove->getPreviousInRank()->updateNextInRank(AVL_all_players_by_goals);
+    player_to_remove->getNextInRank()->updateNextInRank(AVL_all_players_by_goals);
+    AVL_all_players_by_id.remove(playerId);
+    if (!player_to_remove->getTeam()->isValid()){
+        AVL_valid_team.remove(player_to_remove->getTeam()->getTeamId());
+    }
+    player_to_remove->getTeam()->removePlayer(player_to_remove);
     return StatusType::SUCCESS;
 }
 
@@ -124,11 +136,11 @@ output_t<int> world_cup_t::get_num_played_games(int playerId){
     if (playerId <= 0){
         return StatusType::INVALID_INPUT;
     }
-    Player* player = AVL_all_players_by_id.find(playerId)->data;
-    if (player = nullptr){
+    if (AVL_all_players_by_id.find(playerId) == nullptr){
         return StatusType::FAILURE;
     }
-    return player->getNumGames();
+    Player* player = AVL_all_players_by_id.find(playerId)->data;
+    return player->getNumGames()+ player->getTeam()->get_game_played();
 }
 
 output_t<int> world_cup_t::get_team_points(int teamId){
@@ -159,10 +171,11 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     Player** arr_player_newTeam_byId = mergeId (arr_player_team1_byId,arr_player_team2byId, team1->getNumOfPlayer(), team2->getNumOfPlayer());
     Player** arr_player_newTeam_byGoals = mergeGoal(arr_player_team1_byGoals,arr_player_team2_byGoals,team1->getNumOfPlayer(), team2->getNumOfPlayer());
 
-    Team* newTeam = new (Team(newTeamId, team1->getPoints()+team2->getPoints(), //create the new team
-                           team1->getNumOfPlayer()+team2->getNumOfPlayer(),
-                            team1->getTotalGoal()+team2->getTotalGoal(),
-                       team1->getTotalCards() + team2->getTotalCards()));
+    Team* newTeam = new Team(  newTeamId,
+                                team1->getPoints()+team2->getPoints(),
+                                team1->getNumOfPlayer()+team2->getNumOfPlayer(),
+                                team1->getTotalGoal()+team2->getTotalGoal(),
+                                team1->getTotalCards() + team2->getTotalCards());
 
 
     AVL<int, Player*> AVLTeamId; // create the 2 new trees
@@ -218,7 +231,7 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output){
         Player *actualPlayer = best_player_all;
         for (int i = num_of_players; i > 0; i--){
             output[i] = actualPlayer->getId();
-            actualPlayer = actualPlayer->GetPreviousInRank();
+            actualPlayer = actualPlayer->getPreviousInRank();
         }
     }
     if (teamId > 0){
@@ -227,7 +240,7 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output){
             return StatusType::FAILURE;
         }
         Player **playersArr = new Player *[team->getNumOfPlayer()];
-        AVL<PlayerStats, Player *> *playersByGoals = team->getAvlteamPlayersByGoals();
+        AVL<PlayerStats, Player *> *playersByGoals = team->getAvlTeamPlayersByGoals();
         playersByGoals->AVL_to_array_inorder(playersArr, 0);
         for (int i = 0; i < team->getNumOfPlayer(); i++){
             output[i] = playersArr[i]->getId();

@@ -24,6 +24,9 @@ void Team::addPlayer(Player *player){
     }
     teamPlayersById.insert(player->getId(), player);
     teamPlayersByGoals.insert(player->getPlayerStats(), player);
+    if (player->isGoalKeeper()){
+        addGoalKeeper();
+    }
     m_numOfPlayers++;
     player->addGames(-m_game_played);
     player->setTeam(this);
@@ -39,6 +42,11 @@ void Team::removePlayer(Player *player){
     teamPlayersById.remove(player->getId());
     teamPlayersByGoals.remove(player->getPlayerStats());
     m_numOfPlayers--;
+    if (player->isGoalKeeper()){
+        addGoalKeeper(-1);
+    }
+    addCards(player->getCards());
+    addGoals(player->getCards());
     updateBestPlayer();
 }
 
@@ -105,3 +113,25 @@ void Team::putAVLGoal(AVL<PlayerStats, Player *> tree) {
     teamPlayersByGoals=tree;
 }
 
+void Team::addGoalKeeper(int num) {
+    m_numOfGoalKeeper += num;
+}
+
+bool Team::isValid() {
+    if (m_numOfGoalKeeper>0 && m_numOfPlayers>=11){
+        return true;
+    }
+    else return false;
+}
+
+void Team::addCards(int num) {
+    m_total_cards+=num;
+}
+
+void Team::addGoals(int num) {
+    m_total_goal+=num;
+}
+
+int Team::getTeamId() const{
+    return m_team_id;
+}
