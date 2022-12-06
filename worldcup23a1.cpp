@@ -59,7 +59,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     if (playerId <= 0 || teamId <= 0 || gamesPlayed < 0 || goals < 0 || cards < 0 || ((gamesPlayed == 0) && (cards > 0 || goals > 0))){
         return StatusType::INVALID_INPUT;
     }
-    if (!AVL_team_by_id.find(teamId) || AVL_team_by_id.find(playerId)){
+    if (!AVL_team_by_id.find(teamId) || AVL_all_players_by_id.find(playerId)){
         return StatusType::FAILURE;
     }
     Player *player_to_add;

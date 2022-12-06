@@ -38,7 +38,7 @@ private:
     AVL<PlayerStats, Player*> teamPlayersByGoals;
     Player* m_bestTeamPlayer;
 
-    int m_numOfGoalKeeper;
+    int m_numOfGoalKeeper=0;
     int m_team_id;
     int m_numOfPlayers;
     int m_points;
