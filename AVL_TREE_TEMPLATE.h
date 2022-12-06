@@ -228,9 +228,9 @@ class AVL{
 
     
     S getPreviousInorder(T key) const{
-        if(key == nullptr){
-            return nullptr;
-        }
+//        if(key == nullptr){
+//            return nullptr;
+//        }
         Node<T,S>* nearestBefore = root;
         Node<T,S>* trackNode = root;
         while(trackNode->key != key){
@@ -260,9 +260,9 @@ class AVL{
     }
 
     S getNextInorder(T key)const{
-        if(key == nullptr){
-            return nullptr;
-        }
+//        if(key == nullptr){
+//            return nullptr;
+//        }
         Node<T,S>* nearestNext = root;
         Node<T,S>* trackNode = root;
         while(trackNode->key != key){
@@ -279,7 +279,7 @@ class AVL{
                 return nullptr;
             }
         }
-        trackNode = trackNode->next;
+        trackNode = trackNode->right;
         while (trackNode->left){
             trackNode = trackNode->right;
         }

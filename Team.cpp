@@ -1,8 +1,10 @@
+
+
 #include"Team.h"
 
 
-Team::Team(int team_id, int team_points, int numOfPlayers, int goal, int cards):teamPlayersById(*new AVL<int, Player*>),
-                                        teamPlayersByGoals(*new AVL<PlayerStats, Player*>),
+Team::Team(int team_id, int team_points, int numOfPlayers, int goal, int cards):teamPlayersById(AVL<int, Player*>()),
+                                        teamPlayersByGoals(AVL<PlayerStats, Player*>()),
                                         m_team_id(team_id),
                                         m_points(team_points),
                                         m_numOfPlayers(numOfPlayers),
@@ -12,10 +14,7 @@ Team::Team(int team_id, int team_points, int numOfPlayers, int goal, int cards):
 
 
 
-Team::~Team(){
-    delete &teamPlayersByGoals;
-    delete &teamPlayersById;
-}
+Team::~Team(){}
 
 
 void Team::addPlayer(Player *player){
@@ -96,6 +95,7 @@ int Team::getTotalCards() const {
 int Team::getTotalGoal() const {
     return m_total_goal;
 }
+
 Player* Team::getBestPlayer() const{
     return m_bestTeamPlayer;
 }
@@ -120,7 +120,7 @@ void Team::addGoalKeeper(int num) {
     m_numOfGoalKeeper += num;
 }
 
-bool Team::isValid() {
+bool Team::isValid() const {
     if (m_numOfGoalKeeper>0 && m_numOfPlayers>=11){
         return true;
     }

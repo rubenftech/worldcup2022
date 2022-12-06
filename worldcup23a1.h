@@ -17,14 +17,14 @@
 
 #include "wet1util.h"
 #include "AVL_TREE_TEMPLATE.h"
-#include "Team.cpp"
-#include "Player.cpp"
+#include "Team.h"
 
 struct team_ptr_node{
 	Team* teamPtr;
 	team_ptr_node* next_node;
 	int score;
 };
+
 class world_cup_t {
 private:
     AVL<int , Team*> AVL_team_by_id;     // arbre de toutes les equipes key = id

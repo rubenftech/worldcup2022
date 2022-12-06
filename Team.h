@@ -1,3 +1,5 @@
+#ifndef TEAM_H_
+#define TEAM_H_
 
 #include"Player.h"
 
@@ -26,7 +28,7 @@ public:
     int getTotalCards() const;
     int get_game_played()const;
     Player* getBestPlayer()const;
-    bool isValid();
+    bool isValid() const;
     AVL<int, Player*>* getAvlTeamPlayersById();
     AVL<PlayerStats, Player*>* getAvlTeamPlayersByGoals();
 
@@ -46,3 +48,5 @@ private:
 
 };
 bool operator>(const Team& team1, const Team& team2);
+
+#endif
