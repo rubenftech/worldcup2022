@@ -48,6 +48,7 @@ StatusType world_cup_t::remove_team(int teamId){
             AVL_team_by_id.remove(teamId);
         }
         AVL_team_by_id.remove(teamId);
+        return  StatusType::SUCCESS;
     }
     return StatusType::FAILURE;
 }
@@ -61,7 +62,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     if (!AVL_team_by_id.find(teamId) || AVL_team_by_id.find(playerId)){
         return StatusType::FAILURE;
     }
-    Player *player_to_add = nullptr;
+    Player *player_to_add;
     try{
         player_to_add = new Player(playerId, teamId, gamesPlayed, goals, cards, goalKeeper);
     }
