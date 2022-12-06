@@ -17,8 +17,9 @@
 
 #include "wet1util.h"
 #include "AVL_TREE_TEMPLATE.h"
-#include "Team.h"
-#include "Player.h"
+#include "Team.cpp"
+#include "Player.cpp"
+
 struct team_ptr_node{
 	Team* teamPtr;
 	team_ptr_node* next_node;
@@ -35,8 +36,8 @@ private:
 	int num_of_valid_teams;
 
 public:
-    Player** mergeId(Player**, Player**,int, int);
-    Player **mergeGoal(Player **arrayTeam1, Player **arrayTeam2, int player, int player1);
+    static Player** mergeId(Player**, Player**,Player** ,int, int);
+    static Player **mergeGoal(Player **arrayTeam1, Player **arrayTeam2,Player** , int player, int player1);
 
     // <DO-NOT-MODIFY> {
 	

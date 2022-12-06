@@ -27,11 +27,10 @@ StatusType world_cup_t::add_team(int teamId, int points){
     if (AVL_team_by_id.find(teamId)){
         return StatusType::FAILURE;
     }
-    Team *new_team = nullptr;
+    Team* new_team;
     try{
         new_team = new Team(teamId, points);
-    }
-    catch (std::bad_alloc &e){
+    } catch (const std::bad_alloc& e){
         return StatusType::ALLOCATION_ERROR;
     }
     AVL_team_by_id.insert(teamId, new_team);
@@ -56,7 +55,7 @@ StatusType world_cup_t::remove_team(int teamId){
 
 StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
                                    int goals, int cards, bool goalKeeper){
-    if (playerId <= 0 || teamId <= 0 || gamesPlayed < 0 || goals < 0 || cards < 0 || ((gamesPlayed = 0) && (cards > 0 || goals > 0))){
+    if (playerId <= 0 || teamId <= 0 || gamesPlayed < 0 || goals < 0 || cards < 0 || ((gamesPlayed == 0) && (cards > 0 || goals > 0))){
         return StatusType::INVALID_INPUT;
     }
     if (!AVL_team_by_id.find(teamId) || AVL_team_by_id.find(playerId)){
@@ -162,7 +161,7 @@ output_t<int> world_cup_t::get_num_played_games(int playerId){
 
 
 output_t<int> world_cup_t::get_team_points(int teamId){
-    AVL_team_by_id.find(teamId)->data->getPoints();
+    return AVL_team_by_id.find(teamId)->data->getPoints();
 }
 
 
@@ -170,34 +169,42 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     if (teamId1 <= 0||teamId2 <= 0|| teamId1==teamId2||newTeamId <= 0){
         return StatusType::INVALID_INPUT;
     }
-    Team* team1= AVL_team_by_id.find(teamId1)->data;
-    Team* team2= AVL_team_by_id.find(teamId2)->data;
-    if (team1== nullptr||team2== nullptr||(AVL_team_by_id.find(newTeamId)->data!= team1 && AVL_team_by_id.find(newTeamId)->data!=team2)){
+    Node<int, Team*>* nodeTeam1= AVL_team_by_id.find(teamId1);
+    Node<int, Team*>* nodeTeam2= AVL_team_by_id.find(teamId2);
+    if (nodeTeam1== nullptr||nodeTeam2== nullptr||(AVL_team_by_id.find(newTeamId) != nodeTeam1 && AVL_team_by_id.find(newTeamId) != nodeTeam2)){
         return StatusType::FAILURE;
     }
 
-    Player** arr_player_team1_byId;
-    Player** arr_player_team1_byGoals;
-    Player** arr_player_team2byId;
-    Player** arr_player_team2_byGoals;
-    int num_of_players_team1 = team1->getNumOfPlayer();
-    team1->getAvlTeamPlayersById()->AVL_to_array_inorder(arr_player_team1_byId, &num_of_players_team1);
-    num_of_players_team1 = team1->getNumOfPlayer();
-    team1->getAvlTeamPlayersByGoals()->AVL_to_array_inorder(arr_player_team1_byGoals,&num_of_players_team1);
+    Team* team1= AVL_team_by_id.find(teamId1)->data;
+    Team* team2= AVL_team_by_id.find(teamId2)->data;
+
+    Player** arr_player_team1_byId= new Player*[team1->getNumOfPlayer()];
+    Player** arr_player_team1_byGoals=new Player*[team1->getNumOfPlayer()];
+    Player** arr_player_team2_byId= new Player*[team2->getNumOfPlayer()];
+    Player** arr_player_team2_byGoals=new Player*[team2->getNumOfPlayer()];
+
+    int i=0,j=0;
+    team1->getAvlTeamPlayersById()->AVL_to_array_inorder(arr_player_team1_byId, &i);//create an array of player by Id
+    team1->getAvlTeamPlayersByGoals()->AVL_to_array_inorder(arr_player_team1_byGoals,&j); //create an array of player by goal
+
     int num_of_players_team2 = team2->getNumOfPlayer();
-    team2->getAvlTeamPlayersById()->AVL_to_array_inorder(arr_player_team2byId, &num_of_players_team2);
+    team2->getAvlTeamPlayersById()->AVL_to_array_inorder(arr_player_team2_byId, &num_of_players_team2);
     num_of_players_team2 = team2->getNumOfPlayer();
     team2->getAvlTeamPlayersByGoals()->AVL_to_array_inorder(arr_player_team2_byGoals, &num_of_players_team2);
 
 
-    Player** arr_player_newTeam_byId = mergeId (arr_player_team1_byId,arr_player_team2byId, team1->getNumOfPlayer(), team2->getNumOfPlayer());
+    Player **arr_player_newTeam_byId = nullptr;
+    mergeId (arr_player_team1_byId, arr_player_team2_byId, arr_player_newTeam_byId, team1->getNumOfPlayer(), team2->getNumOfPlayer());
     int arr_id_newTeam_byId[team1->getNumOfPlayer()+team2->getNumOfPlayer()];
-    Player** arr_player_newTeam_byGoals = mergeGoal(arr_player_team1_byGoals,arr_player_team2_byGoals,team1->getNumOfPlayer(), team2->getNumOfPlayer());
+    Player **arr_player_newTeam_byGoals = nullptr;
+    mergeGoal(arr_player_team1_byGoals,arr_player_team2_byGoals,arr_player_newTeam_byGoals,team1->getNumOfPlayer(), team2->getNumOfPlayer());
+
     PlayerStats arr_stats_newTeam_byGoals[team1->getNumOfPlayer()+team2->getNumOfPlayer()];
     for(int i = 0; i<team1->getNumOfPlayer()+team2->getNumOfPlayer(); i++){
         arr_id_newTeam_byId[i] = arr_player_newTeam_byId[i]->getId();
         arr_stats_newTeam_byGoals[i] = arr_player_newTeam_byGoals[i]->getStats();
     }
+
     Team* newTeam = new Team(  newTeamId,
                                 team1->getPoints()+team2->getPoints(),
                                 team1->getNumOfPlayer()+team2->getNumOfPlayer(),
@@ -219,9 +226,6 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
         }
 
     AVL_team_by_id.insert(newTeamId, newTeam);
-    AVL_team_by_id.remove(teamId1);
-    AVL_team_by_id.remove(teamId2);
-
     return StatusType::SUCCESS;
 }
 
@@ -281,6 +285,7 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output){
         delete[] playersArr;
         return StatusType::SUCCESS;
     }
+    return StatusType::FAILURE;
 }
 
 
@@ -327,7 +332,7 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
     first_node->teamPtr = nullptr;
     first_node->score = 0;
     int numOfConcurentTeams = getConcurrentTeams(&AVL_valid_team, minTeamId, maxTeamId, first_node);
-    team_ptr_node* currentTeam = first_node;
+    team_ptr_node* currentTeam = nullptr;
     while(numOfConcurentTeams > 1){
         currentTeam = first_node;
         while (currentTeam->next_node && currentTeam->next_node->next_node){
@@ -348,14 +353,15 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
         int winnerId = first_node ->next_node->teamPtr->getTeamId();
         delete first_node->next_node;
         delete first_node;
-        return winnerId;
+        return StatusType::SUCCESS;
     }
+    return StatusType::FAILURE;
+
 }
 
 
-Player **world_cup_t::mergeGoal (Player* arrayTeam1[], Player* arrayTeam2[], int sizeTeam1, int sizeTeam2) { // on lui donne deux tableaux de player
+Player **world_cup_t::mergeGoal (Player* arrayTeam1[], Player* arrayTeam2[],Player* arrOfPlayerOf2Teams[], int sizeTeam1, int sizeTeam2) { // on lui donne deux tableaux de player
 
-    Player *arrOfPlayerOf2Teams[sizeTeam1 + sizeTeam2];
     int i = 0, j = 0, k = 0;
     while (i < sizeTeam1 && j < sizeTeam2) {
         if (arrayTeam1[i]->getPlayerStats() > arrayTeam2[j]->getPlayerStats()) {
@@ -381,9 +387,8 @@ Player **world_cup_t::mergeGoal (Player* arrayTeam1[], Player* arrayTeam2[], int
 }
 
 
-Player** world_cup_t::mergeId(Player* arrayTeam1[], Player* arrayTeam2[], int sizeTeam1, int sizeTeam2){ // on lui donne deux tableaux de player
+Player** world_cup_t::mergeId(Player* arrayTeam1[], Player* arrayTeam2[],Player* arrOfPlayerOf2Teams[], int sizeTeam1, int sizeTeam2){ // on lui donne deux tableaux de player
 
-    Player* arrOfPlayerOf2Teams [sizeTeam1+sizeTeam2];
     int i=0, j=0,k=0;
     while (i<sizeTeam1 && j<sizeTeam2){
         if (arrayTeam1[i]->getId() > arrayTeam2[j]->getId()) {

@@ -10,7 +10,7 @@ private:
     int m_cards;
     int m_playerId;
 public:
-    PlayerStats(int goals = 0, int cards = 0, int id = 0);
+    explicit PlayerStats(int goals = 0, int cards = 0, int id = 0);
     ~PlayerStats() = default;
     PlayerStats operator-(const PlayerStats& playerStats)const;
     friend bool operator>(const PlayerStats& player1, const PlayerStats& player2);
@@ -23,8 +23,10 @@ bool operator!=(const PlayerStats& player1, const PlayerStats& player2);
 
 class Player{
 public:
-    Player(int playerId, int teamId, int gamesPlayed, int goals, int cards, bool goalKeeper);
+    Player(int playerId, int teamId, int gamesPlayed=0, int goals=0, int cards=0, bool goalKeeper=0);
     ~Player() = default;
+    Player(const Player&)=default;
+    Player& operator=(Player&)=default;
 
     void addGames(int newGames = 1);
     void addGoals(int newGoals);
@@ -47,11 +49,11 @@ public:
 
 
 private:
-    const int m_playerId;
+    int m_playerId;
     int m_gamePlayed;
     int m_goals;
     int m_cards;
-    const bool m_goalKeeper;
+    bool m_goalKeeper;
     Team* m_team_ptr;
     Player* m_previousInRank;
     Player* m_nextInRank;

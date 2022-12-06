@@ -46,7 +46,7 @@ class AVL{
         else if (key < node->key){
             node->left = insertFunc(node->left, key,data);
             node = balance(node);
-        } else if (node->key <= key) {
+        } else if (node->key < key||node->key == key) {
             node->right = insertFunc(node->right, key, data);
             node = balance(node);
         } return node;
@@ -131,15 +131,15 @@ class AVL{
     }//recursive helper clear function
 
     void clearDataAndTree(){
-        ClearDataAndTreeFunc(root);
+        clearDataAndTreeFunc(root);
         root = nullptr;
         size=0;
     }//remove all nodes deleting the data
 
     void clearDataAndTreeFunc (Node<T,S>* node){
         if(node != nullptr){
-            ClearDataAndTreeFunc(node->left);
-            ClearDataAndTreeFunc(node->right);
+            clearDataAndTreeFunc(node->left);
+            clearDataAndTreeFunc(node->right);
             delete node->data;
             delete node;
         }
@@ -165,7 +165,7 @@ class AVL{
             return;
         }
         AVL_to_array_inorder_helper(firstNode->left,arr,i);
-        (*arr)[*i]=firstNode->data;
+        arr[*i]=firstNode->data;
         (*i)++;
         AVL_to_array_inorder_helper(firstNode->right,arr,i);
     }
@@ -243,7 +243,7 @@ class AVL{
             else{
                 trackNode = trackNode->left;
             }
-            if(trackNode==nullptr){
+            if(trackNode == nullptr){
                 return nullptr;
             }
         }
@@ -342,14 +342,14 @@ class AVL{
     Node<T,S> * rl_rotation(Node<T,S> *father){
         Node<T,S>* node;
         node = father->right;
-        father->right = ll_rotate(node);
+        father->right = ll_rotation(node);
         return rr_rotation(father);
     }
 
     Node<T,S> * lr_rotation(Node<T,S>* father){
         Node<T,S>* node;
         node = father->left;
-        father->left = rr_rotate(node);
+        father->left = rr_rotation(node);
         return ll_rotation(father);
     }
 
