@@ -19,7 +19,11 @@
 #include "AVL_TREE_TEMPLATE.h"
 #include "Team.h"
 #include "Player.h"
-
+struct team_ptr_node{
+	Team* teamPtr;
+	team_ptr_node* next_node;
+	int score;
+};
 class world_cup_t {
 private:
     AVL<int , Team*> AVL_team_by_id;     // arbre de toutes les equipes key = id

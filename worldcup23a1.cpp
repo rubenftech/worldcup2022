@@ -287,51 +287,67 @@ output_t<int> world_cup_t::get_closest_player(int playerId, int teamId){
 }
 
 
+int getConcurrentTeams(AVL<int, Team*>* AVL_valid_team, int minTeamId, int maxTeamId, team_ptr_node* first_node){
+    int nuOfTeams = 0;
+    team_ptr_node** actualNodeInLinkedList = &first_node;
+    getConcurrentTeamsHelper(AVL_valid_team->root, minTeamId, maxTeamId, actualNodeInLinkedList, &nuOfTeams);
+    return nuOfTeams;
+    
+}
+void getConcurrentTeamsHelper(Node<int, Team*>* actualNode, int minTeamId,
+                                     int maxTeamId, team_ptr_node** actualNodeInLinkedList, int* numOfTeams){
+    if(!actualNode){
+        return;
+    }
+    if(!actualNode->right || actualNode->right->key > minTeamId){
+        getConcurrentTeamsHelper(actualNode->right, minTeamId, maxTeamId, actualNodeInLinkedList, numOfTeams);
+    }
+    if (actualNode->key < maxTeamId && actualNode->key > minTeamId){
+        team_ptr_node* newNode = new team_ptr_node();
+        newNode->next_node = nullptr;
+        newNode->teamPtr = actualNode->data;
+        newNode-> score =  actualNode->data->getPoints()+actualNode->data->getTotalGoal()
+                                                            -actualNode->data->getTotalCards();
+        (*actualNodeInLinkedList)->next_node = newNode;
+        actualNodeInLinkedList = &((*actualNodeInLinkedList)->next_node);
+        *numOfTeams++;
+    }
+    if(!actualNode->left || actualNode->left->key < maxTeamId){
+        getConcurrentTeamsHelper(actualNode->right, minTeamId, maxTeamId, actualNodeInLinkedList, numOfTeams);
+    }
+
+}
 output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
-
-    
-    
-    
-    
-    if (minTeamId<0|| maxTeamId<0||maxTeamId<minTeamId){
-        return StatusType::INVALID_INPUT;
-    }
-    Node<int, Team*>* nodeFirstTeam = nullptr;
-    while (nodeFirstTeam == nullptr && minTeamId < AVL_valid_team.dataOfTheMax()->getTeamId()){
-        nodeFirstTeam= AVL_valid_team.find(minTeamId);
-        minTeamId++;
-    }
-    if (nodeFirstTeam = nullptr){
-        return StatusType::FAILURE;
-    }
-    Team* firstTeam = AVL_valid_team.find(minTeamId)->data;
-    Node<int, Team*>* nodeLastTeam = nullptr;
-    while (maxTeamId>=minTeamId &&  AVL_valid_team.find(maxTeamId)==0){
-        AVL_valid_team.find(maxTeamId);
-        maxTeamId--;
-    }
-    Team* lastTeam = AVL_valid_team.find(maxTeamId)->data;
-    int id_concurrent_teams[num_of_valid_teams];
-    Team* currentTeam = firstTeam;
-    Node* currentNode = nodeFirstTeam;
-    while(currentTeam->getTeamId()<maxTeamId){
-        while (currentNode->left)
-        {
-            currentNode = currentNode->left;
+    team_ptr_node* first_node = new team_ptr_node();
+    first_node->next_node = nullptr;
+    first_node->teamPtr = nullptr;
+    first_node->score = 0;
+    int numOfConcurentTeams = getConcurrentTeams(&AVL_valid_team, minTeamId, maxTeamId, first_node);
+    team_ptr_node* currentTeam = first_node;
+    while(numOfConcurentTeams > 1){
+        currentTeam = first_node;
+        while (currentTeam->next_node && currentTeam->next_node->next_node){
+            if(currentTeam->next_node->score>currentTeam->next_node->next_node->score){
+                currentTeam->next_node->score+=currentTeam->next_node->next_node->score;
+                team_ptr_node* nodeTodelete = currentTeam->next_node->next_node;
+                currentTeam->next_node->next_node = nodeTodelete->next_node;
+                delete nodeTodelete;
+            }
+            else{
+                currentTeam->next_node->next_node->score+=currentTeam->next_node->score;
+                team_ptr_node* nodeTodelete = currentTeam->next_node;
+                currentTeam->next_node = nodeTodelete->next_node;
+                delete nodeTodelete;
+            }currentTeam = currentTeam->next_node->next_node;
+            numOfConcurentTeams--;
         }
-        
-        
+        int winnerId = first_node ->next_node->teamPtr->getTeamId();
+        delete first_node->next_node;
+        delete first_node;
+        return winnerId;
     }
+    
 
-    void AVL_to_array_inorder_helper(Node<T,S>* firstNode,S *arr, int* i){
-        if(firstNode== nullptr){
-            return;
-        }
-        AVL_to_array_inorder_helper(firstNode->left,arr,i);
-        (*arr)[*i]=firstNode->data;
-        (*i)++;
-        AVL_to_array_inorder_helper(firstNode->right,arr,i);
-    }
 
     /*cloner les r equipes dans un arbres
      * inorder play match
@@ -340,7 +356,6 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
      *
      *
      * */
-	return ;
 }
 
 
