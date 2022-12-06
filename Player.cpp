@@ -5,6 +5,9 @@ PlayerStats::PlayerStats(int goals, int cards, int id): m_goals(goals),
                                                         m_cards(cards),
                                                         m_playerId(id){}
 
+PlayerStats PlayerStats::operator-(const PlayerStats& playerStats)const{
+    return PlayerStats(m_goals-playerStats.m_goals, m_cards-playerStats.m_cards, m_playerId-playerStats.m_playerId);
+}
 bool operator>(const PlayerStats& player1, const PlayerStats& player2){
     if(player1.m_goals > player2.m_goals){
         return true;
@@ -83,7 +86,9 @@ void Player::updatePreviousInRank(AVL<PlayerStats, Player*> rankedTree){
     PlayerStats keyInRankedTree(m_goals, m_cards, m_playerId);
     m_previousInRank = rankedTree.getPreviousInorder(keyInRankedTree);   
 }
-
+PlayerStats Player::getStats()const{
+    return PlayerStats(m_goals, m_cards, m_playerId);
+}
 Player* Player::getPreviousInRank() const{
     return m_previousInRank;
 }
@@ -113,8 +118,6 @@ Team *Player::getTeam() {
 int Player::getClosest() {
     Player* playerNext= getNextInRank();
     Player* playerPrevious= getPreviousInRank();
-// continuer la fonction
-    return 0;
-
-
+    return (playerNext->getStats()-this->getStats()<this->getStats()-playerPrevious->getStats())? 
+                                                    playerNext->getId() : playerPrevious->getId();
 }

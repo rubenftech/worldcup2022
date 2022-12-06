@@ -28,6 +28,7 @@ private:
     AVL<int , Team*> AVL_valid_team;
     Player* best_player_all = nullptr; // meilleur de tous les joueurs
 	int num_of_players;
+	int num_of_valid_teams;
 
 public:
     Player** mergeId(Player**, Player**,int, int);

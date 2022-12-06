@@ -10,8 +10,9 @@ private:
     int m_cards;
     int m_playerId;
 public:
-    PlayerStats(int goals, int cards, int id);
+    PlayerStats(int goals = 0, int cards = 0, int id = 0);
     ~PlayerStats() = default;
+    PlayerStats operator-(const PlayerStats& playerStats)const;
     friend bool operator>(const PlayerStats& player1, const PlayerStats& player2);
     friend bool operator==(const PlayerStats& player1, const PlayerStats& player2);
 };
@@ -38,6 +39,7 @@ public:
     int getGoals() const;
     Team* getTeam();
     bool isGoalKeeper() const;
+    PlayerStats getStats()const;
     Player* getPreviousInRank()const;
     Player* getNextInRank()const;
     PlayerStats getPlayerStats()const;

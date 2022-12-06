@@ -156,35 +156,37 @@ class AVL{
 
     }//print node's data with in-order traversal
 
-    void AVL_to_array_inorder(S *arr, int i){
+    void AVL_to_array_inorder(S *arr, int* i){
         AVL_to_array_inorder_helper(root,arr,i);
     }
 
-    void AVL_to_array_inorder_helper(Node<T,S>* firstNode,S *arr, int i){
+    void AVL_to_array_inorder_helper(Node<T,S>* firstNode,S *arr, int* i){
         if(firstNode== nullptr){
             return;
         }
         AVL_to_array_inorder_helper(firstNode->left,arr,i);
-        (*arr)[i]=firstNode->data;
-        i++;
+        (*arr)[*i]=firstNode->data;
+        (*i)++;
         AVL_to_array_inorder_helper(firstNode->right,arr,i);
     }
 
 
 
-    void array_to_AVL_inorder(T **arrKey,S **arrData, int i){// changer la fonction
+    void array_to_AVL_inorder(T* arrKey,S *arrData, int i){
         array_to_AVL_inorder_helper(root,arrKey,arrData,i);
     }
 
-    void array_to_AVL_inorder_helper(Node<T,S>* firstNode,T ** arrKey,S **arrData, int i){
-        if(firstNode== nullptr){
+    void array_to_AVL_inorder_helper(Node<T,S>* firstNode,T * arrKey,S *arrData, int i){
+        if(i==0){
             return;
         }
-        array_to_AVL_inorder_helper(firstNode->left,arrKey,arrData,i);
-        firstNode->key = (*arrKey)[i];
-        firstNode->data = (*arrData)[i];
-        i++;
-        array_to_AVL_inorder_helper(firstNode->right,arrKey,arrData,i);
+        firstNode = new Node<T,S>;
+        node->key = arrKey[(i+1)/2];
+        node->data = arrData[(i+1)/2];
+        node->left = nullptr;
+        node->right = nullptr;
+        array_to_AVL_inorder_helper(firstNode->left,arrKey,arrData,((i+1)/2)-1);
+        array_to_AVL_inorder_helper(firstNode->right, arrKey+((i+1)/2), arrData+((i+1)/2), i-((i+1)/2));
     }
 
 
@@ -364,4 +366,3 @@ class AVL{
 
 
 #endif //MIVNEWET1_AVL_H
-
