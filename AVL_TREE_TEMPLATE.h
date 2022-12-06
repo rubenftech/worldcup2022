@@ -181,10 +181,10 @@ class AVL{
             return;
         }
         firstNode = new Node<T,S>;
-        node->key = arrKey[(i+1)/2];
-        node->data = arrData[(i+1)/2];
-        node->left = nullptr;
-        node->right = nullptr;
+        firstNode->key = arrKey[(i+1)/2];
+        firstNode->data = arrData[(i+1)/2];
+        firstNode->left = nullptr;
+        firstNode->right = nullptr;
         array_to_AVL_inorder_helper(firstNode->left,arrKey,arrData,((i+1)/2)-1);
         array_to_AVL_inorder_helper(firstNode->right, arrKey+((i+1)/2), arrData+((i+1)/2), i-((i+1)/2));
     }

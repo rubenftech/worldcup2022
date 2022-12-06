@@ -1,6 +1,8 @@
 #include "worldcup23a1.h"
 
 
+void getConcurrentTeamsHelper(Node<int, Team *> *pNode, int id, int id1, team_ptr_node **pNode1, int *pInt);
+
 world_cup_t::world_cup_t(){
     AVL_team_by_id = AVL<int, Team *>();
     AVL_all_players_by_id = AVL<int, Player *>();
@@ -294,8 +296,10 @@ int getConcurrentTeams(AVL<int, Team*>* AVL_valid_team, int minTeamId, int maxTe
     return nuOfTeams;
     
 }
-void getConcurrentTeamsHelper(Node<int, Team*>* actualNode, int minTeamId,
-                                     int maxTeamId, team_ptr_node** actualNodeInLinkedList, int* numOfTeams){
+
+
+void getConcurrentTeamsHelper(Node<int, Team *> *actualNode, int minTeamId,
+                                     int maxTeamId, team_ptr_node **actualNodeInLinkedList, int *numOfTeams){
     if(!actualNode){
         return;
     }
@@ -315,8 +319,8 @@ void getConcurrentTeamsHelper(Node<int, Team*>* actualNode, int minTeamId,
     if(!actualNode->left || actualNode->left->key < maxTeamId){
         getConcurrentTeamsHelper(actualNode->right, minTeamId, maxTeamId, actualNodeInLinkedList, numOfTeams);
     }
-
 }
+
 output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
     team_ptr_node* first_node = new team_ptr_node();
     first_node->next_node = nullptr;
@@ -346,16 +350,6 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
         delete first_node;
         return winnerId;
     }
-    
-
-
-    /*cloner les r equipes dans un arbres
-     * inorder play match
-     * unit team if equipe perd
-     * retourne lequipe qui gagne
-     *
-     *
-     * */
 }
 
 
