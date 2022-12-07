@@ -173,22 +173,21 @@ class AVL{
 
 
 
-    void array_to_AVL_inorder(S *array,int numOfNodes){
-        int i=0;
-        array_to_AVL_inorder_helper(array, i,numOfNodes);
+    void array_to_AVL_inorder(T **arrKey,S **arrData, int i){
+        array_to_AVL_inorder_helper(root, arrKey, arrData, i);
     }
 
-    void array_to_AVL_inorder_helper(S *arrKey,int start, int end){
-//        if(i==0){
-//            return;
-//        }
-//        firstNode = new Node<T,S>;
-//        firstNode->key = arrKey[(i+1)/2];
-//        firstNode->data = arrData[(i+1)/2];
-//        firstNode->left = nullptr;
-//        firstNode->right = nullptr;
-//        array_to_AVL_inorder_helper(firstNode->left,arrKey,arrData,((i+1)/2)-1);
-//        array_to_AVL_inorder_helper(firstNode->right, arrKey+((i+1)/2), arrData+((i+1)/2), i-((i+1)/2));
+    void array_to_AVL_inorder_helper(Node<T,S>* firstNode,T **arrKey,S **arrData, int i){
+        if(i==0){
+            return;
+        }
+        firstNode = new Node<T,S>;
+        firstNode->key = arrKey[i/2];
+        firstNode->data = arrData[i/2];
+        firstNode->left = nullptr;
+        firstNode->right = nullptr; 
+        array_to_AVL_inorder_helper(firstNode->left,arrKey,arrData,(i/2));
+        array_to_AVL_inorder_helper(firstNode->right, arrKey+((i/2)+1), arrData+((i/2)+1), i-((i/2)+1));
     }
 
 
