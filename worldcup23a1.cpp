@@ -225,9 +225,9 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     AVL<int, Player*> AVLTeamId = AVL<int, Player*>(); // create the 2 new trees
     AVL<PlayerStats, Player*> AVLTeamGoal= AVL<PlayerStats, Player*>() ;
 
-
-    AVLTeamId.array_to_AVL_inorder(arr_newTeam_byId, arr_player_newTeam_byId,  num_player_newTeam_byId); // put the arrays into trees
-    AVLTeamGoal.array_to_AVL_inorder(arr_newTeam_byGoals, arr_player_newTeam_byGoals, num_player_newTeam_byId);
+    int i=0;
+    AVLTeamId.array_to_AVL_inorder(arr_player_newTeam_byId, num_player_newTeam_byId); // put the arrays into trees
+    AVLTeamGoal.array_to_AVL_inorder(arr_player_newTeam_byGoals, num_player_newTeam_byId);
 
     newTeam->putAVLid(AVLTeamId); //put the trees into the team
     newTeam->putAVLGoal(AVLTeamGoal);
