@@ -166,8 +166,8 @@ class AVL{
             return;
         }
         AVL_to_array_inorder_helper(firstNode->left,arr,i);
-        (*arr)[*i]=firstNode->data;
-        (*i)=*i+1;
+        *arr[*i]=firstNode->data;
+        (*i)++;
         AVL_to_array_inorder_helper(firstNode->right,arr,i);
     }
 
