@@ -180,7 +180,6 @@ output_t<int> world_cup_t::get_team_points(int teamId){
     return AVL_team_by_id.find(teamId)->data->getPoints();
 }
 
-
 StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     if (teamId1 <= 0||teamId2 <= 0|| teamId1==teamId2||newTeamId <= 0){
         return StatusType::INVALID_INPUT;
@@ -193,56 +192,55 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
 
     Team* team1= AVL_team_by_id.find(teamId1)->data;
     Team* team2= AVL_team_by_id.find(teamId2)->data;
+    int num_player_newTeam_byId = team1->getNumOfPlayer()+team2->getNumOfPlayer();
 
-    Player** arr_player_team1_byId= new Player*[team1->getNumOfPlayer()];
+    Player** arr_player_team1_byId= new Player*[team1->getNumOfPlayer()]; //create null array of playerpointer
     Player** arr_player_team1_byGoals=new Player*[team1->getNumOfPlayer()];
     Player** arr_player_team2_byId= new Player*[team2->getNumOfPlayer()];
     Player** arr_player_team2_byGoals=new Player*[team2->getNumOfPlayer()];
 
     team1->getAvlTeamPlayersById()->AVL_to_array_inorder(&arr_player_team1_byId);//create an array of player by Id
     team1->getAvlTeamPlayersByGoals()->AVL_to_array_inorder(&arr_player_team1_byGoals); //create an array of player by goal
-
-    int num_of_players_team2 = team2->getNumOfPlayer();
     team2->getAvlTeamPlayersById()->AVL_to_array_inorder(&arr_player_team2_byId);
-    num_of_players_team2 = team2->getNumOfPlayer();
     team2->getAvlTeamPlayersByGoals()->AVL_to_array_inorder(&arr_player_team2_byGoals);
 
 
-    Player **arr_player_newTeam_byId = nullptr;
+    Player **arr_player_newTeam_byId = new Player*[num_player_newTeam_byId];
     mergeId (arr_player_team1_byId, arr_player_team2_byId, arr_player_newTeam_byId, team1->getNumOfPlayer(), team2->getNumOfPlayer());
-    int** arr_id_newTeam_byId=new int*[team1->getNumOfPlayer()+team2->getNumOfPlayer()];
-    Player **arr_player_newTeam_byGoals = nullptr;
+    Player **arr_player_newTeam_byGoals=new Player*[num_player_newTeam_byId];
     mergeGoal(arr_player_team1_byGoals,arr_player_team2_byGoals,arr_player_newTeam_byGoals,team1->getNumOfPlayer(), team2->getNumOfPlayer());
 
-    PlayerStats** arr_stats_newTeam_byGoals = new PlayerStats*[team1->getNumOfPlayer()+team2->getNumOfPlayer()];
-    for(int i = 0; i<team1->getNumOfPlayer()+team2->getNumOfPlayer(); i++){
-        *arr_id_newTeam_byId[i] = arr_player_newTeam_byId[i]->getId();
-        *arr_stats_newTeam_byGoals[i] = arr_player_newTeam_byGoals[i]->getStats();
-    }
+//    for(int i = 0; i<num_player_newTeam_byId; i++){
+//        arr_player_newTeam_byId[i] = arr_player_newTeam_byId[i];
+//        arr_player_newTeam_byGoals[i] = arr_player_newTeam_byGoals[i];
+//    }
 
     Team* newTeam = new Team(  newTeamId,
-                                team1->getPoints()+team2->getPoints(),
-                                team1->getNumOfPlayer()+team2->getNumOfPlayer(),
-                                team1->getTotalGoal()+team2->getTotalGoal(),
-                                team1->getTotalCards() + team2->getTotalCards());
+                               team1->getPoints()+team2->getPoints(),
+                               num_player_newTeam_byId,
+                               team1->getTotalGoal()+team2->getTotalGoal(),
+                               team1->getTotalCards() + team2->getTotalCards());
 
 
-    AVL<int, Player*> AVLTeamId; // create the 2 new trees
-    AVL<PlayerStats, Player*> AVLTeamGoal;
+    AVL<int, Player*> AVLTeamId = AVL<int, Player*>(); // create the 2 new trees
+    AVL<PlayerStats, Player*> AVLTeamGoal= AVL<PlayerStats, Player*>() ;
 
-    AVLTeamId.array_to_AVL_inorder(arr_id_newTeam_byId, &arr_player_newTeam_byId,  team1->getNumOfPlayer()+team2->getNumOfPlayer()); // put the arrays into trees
-    AVLTeamGoal.array_to_AVL_inorder(arr_stats_newTeam_byGoals, &arr_player_newTeam_byGoals,  team1->getNumOfPlayer()+team2->getNumOfPlayer());
+
+    AVLTeamId.array_to_AVL_inorder(arr_newTeam_byId, arr_player_newTeam_byId,  num_player_newTeam_byId); // put the arrays into trees
+    AVLTeamGoal.array_to_AVL_inorder(arr_newTeam_byGoals, arr_player_newTeam_byGoals, num_player_newTeam_byId);
 
     newTeam->putAVLid(AVLTeamId); //put the trees into the team
     newTeam->putAVLGoal(AVLTeamGoal);
 
+
     if (!AVL_valid_team.find(newTeam->getTeamId()) && AVL_team_by_id.find(newTeam->isValid())){
-            AVL_valid_team.insert(newTeam->getTeamId(), newTeam);
-        }
+        AVL_valid_team.insert(newTeam->getTeamId(), newTeam);
+    }
 
     AVL_team_by_id.insert(newTeamId, newTeam);
     return StatusType::SUCCESS;
 }
+
 
 
 output_t<int> world_cup_t::get_top_scorer(int teamId){

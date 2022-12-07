@@ -174,7 +174,7 @@ class AVL{
 
 
     void array_to_AVL_inorder(T **arrKey,S **arrData, int i){
-        array_to_AVL_inorder_helper(root,&arrKey,&arrData,&i);
+        array_to_AVL_inorder_helper(root,arrKey,&arrData,&i);
     }
 
     void array_to_AVL_inorder_helper(Node<T,S>* firstNode,T **arrKey,S *arrData, int i){
