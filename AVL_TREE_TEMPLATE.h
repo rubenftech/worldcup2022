@@ -83,7 +83,7 @@ class AVL{
 
         if (node == nullptr){ //not found
             return nullptr;
-        }
+        } 
         else if (key < node->key){
             node->left = removeFunc(node->left, key);
         }
@@ -166,7 +166,7 @@ class AVL{
             return;
         }
         AVL_to_array_inorder_helper(firstNode->left,arr,i);
-        *arr[*i]=firstNode->data;
+        (*arr)[*i]=firstNode->data;
         (*i)++;
         AVL_to_array_inorder_helper(firstNode->right,arr,i);
     }
@@ -262,6 +262,9 @@ class AVL{
                 return nearestBefore->data;
             }
         }
+        if(nearestBefore->key == key){
+            return nullptr;
+        }
         return nearestBefore->data;
 
     }
@@ -298,6 +301,9 @@ class AVL{
             } else {
                 return nearestNext->data;
             }
+        }
+        if(nearestNext->key == key){
+            return nullptr;
         }
         return nearestNext->data;
     }
