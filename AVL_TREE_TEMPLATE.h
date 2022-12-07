@@ -158,16 +158,16 @@ class AVL{
 
     void AVL_to_array_inorder(S **arr){
         int i=0;
-        AVL_to_array_inorder_helper(root,arr,i);
+        AVL_to_array_inorder_helper(root,arr,&i);
     }
 
-    void AVL_to_array_inorder_helper(Node<T,S>* firstNode,S **arr,int i){
+    void AVL_to_array_inorder_helper(Node<T,S>* firstNode,S **arr,int *i){
         if(firstNode== nullptr){
             return;
         }
         AVL_to_array_inorder_helper(firstNode->left,arr,i);
-        *arr[i]=firstNode->data;
-        i++;
+        *arr[*i]=firstNode->data;
+        (*i)++;
         AVL_to_array_inorder_helper(firstNode->right,arr,i);
     }
 
@@ -182,8 +182,8 @@ class AVL{
             return;
         }
         firstNode = new Node<T,S>;
-        firstNode->key = arrKey[i/2];
-        firstNode->data = arrData[i/2];
+        firstNode->key = *arrKey[i/2];
+        firstNode->data = *arrData[i/2];
         firstNode->left = nullptr;
         firstNode->right = nullptr; 
         array_to_AVL_inorder_helper(firstNode->left,arrKey,arrData,(i/2));
@@ -372,8 +372,8 @@ class AVL{
         return node;
     }
 
-};
 
+};
 
 
 #endif //MIVNEWET1_AVL_H

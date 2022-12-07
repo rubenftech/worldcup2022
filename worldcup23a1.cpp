@@ -186,7 +186,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     }
     Node<int, Team*>* nodeTeam1= AVL_team_by_id.find(teamId1);
     Node<int, Team*>* nodeTeam2= AVL_team_by_id.find(teamId2);
-    if (nodeTeam1== nullptr||nodeTeam2== nullptr||(AVL_team_by_id.find(newTeamId) != nodeTeam1 && AVL_team_by_id.find(newTeamId) != nodeTeam2)){
+    if (nodeTeam1== nullptr||nodeTeam2== nullptr||( AVL_team_by_id.find(newTeamId) != nullptr) && (AVL_team_by_id.find(newTeamId) != nodeTeam1)&& (AVL_team_by_id.find(newTeamId) != nodeTeam2)){
         return StatusType::FAILURE;
     }
 
@@ -206,15 +206,17 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
 
 
     Player **arr_player_newTeam_byId = new Player*[num_player_newTeam_byId];
-    mergeId (arr_player_team1_byId, arr_player_team2_byId, arr_player_newTeam_byId, team1->getNumOfPlayer(), team2->getNumOfPlayer());
-    Player **arr_player_newTeam_byGoals=new Player*[num_player_newTeam_byId];
-    mergeGoal(arr_player_team1_byGoals,arr_player_team2_byGoals,arr_player_newTeam_byGoals,team1->getNumOfPlayer(), team2->getNumOfPlayer());
-    int** arr_id_newTeam_byId=new int*[num_player_newTeam_byId ];
-    PlayerStats** arr_stats_newTeam_byGoals = new PlayerStats*[num_player_newTeam_byId ];
-//    for(int i = 0; i<num_player_newTeam_byId; i++){
-//        arr_player_newTeam_byId[i] = arr_player_newTeam_byId[i];
-//        arr_player_newTeam_byGoals[i] = arr_player_newTeam_byGoals[i];
-//    }
+    Player **arr_player_newTeam_byStats= new Player*[num_player_newTeam_byId];
+    int** arr_id = new int*[num_player_newTeam_byId];
+    PlayerStats** arr_stats= new PlayerStats*[num_player_newTeam_byId];
+
+    mergeId ( arr_player_team1_byId, arr_player_team2_byId, arr_player_newTeam_byId, team1->getNumOfPlayer(), team2->getNumOfPlayer());
+    mergeGoal(arr_player_team1_byGoals,arr_player_team2_byGoals,arr_player_newTeam_byStats,team1->getNumOfPlayer(), team2->getNumOfPlayer());
+
+    for(int i = 0; i<num_player_newTeam_byId; i++){
+        *arr_id[i]= arr_player_newTeam_byId[i]->getId() ;
+       *arr_stats[i] = arr_player_newTeam_byStats[i]->getPlayerStats();
+    }
 
     Team* newTeam = new Team(  newTeamId,
                                team1->getPoints()+team2->getPoints(),
@@ -226,9 +228,8 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     AVL<int, Player*> AVLTeamId = AVL<int, Player*>(); // create the 2 new trees
     AVL<PlayerStats, Player*> AVLTeamGoal= AVL<PlayerStats, Player*>() ;
 
-    int i=0;
-    AVLTeamId.array_to_AVL_inorder(arr_id_newTeam_byId, &arr_player_newTeam_byId, num_player_newTeam_byId); // put the arrays into trees
-    AVLTeamGoal.array_to_AVL_inorder(arr_stats_newTeam_byGoals, &arr_player_newTeam_byGoals, num_player_newTeam_byId);
+    AVLTeamId.array_to_AVL_inorder(arr_id, &arr_player_newTeam_byId, num_player_newTeam_byId); // put the arrays into trees
+    AVLTeamGoal.array_to_AVL_inorder(arr_stats, &arr_player_newTeam_byStats, num_player_newTeam_byId);
 
     newTeam->putAVLid(AVLTeamId); //put the trees into the team
     newTeam->putAVLGoal(AVLTeamGoal);
@@ -384,48 +385,56 @@ Player **world_cup_t::mergeGoal (Player* arrayTeam1[], Player* arrayTeam2[],Play
         if (arrayTeam1[i]->getPlayerStats() > arrayTeam2[j]->getPlayerStats()) {
             arrOfPlayerOf2Teams[k] = arrayTeam1[i];
             i++;
+            k++;
         } else {
             arrOfPlayerOf2Teams[k] = arrayTeam2[j];
             j++;
+            k++;
         }
     }
     if (i == sizeTeam1) {
         while (j < sizeTeam2) {
             arrOfPlayerOf2Teams[k] = arrayTeam2[j];
             j++;
+            k++;
         }
     } else {
         while (i < sizeTeam1) {
             arrOfPlayerOf2Teams[k] = arrayTeam1[i];
             i++;
+            k++;
         }
     }
     return arrOfPlayerOf2Teams;
 }
 
 
-Player** world_cup_t::mergeId(Player* arrayTeam1[], Player* arrayTeam2[],Player* arrOfPlayerOf2Teams[], int sizeTeam1, int sizeTeam2){ // on lui donne deux tableaux de player
+Player** world_cup_t::mergeId(Player** arrayTeam1, Player** arrayTeam2,Player** arrOfPlayerOf2Teams, int sizeTeam1, int sizeTeam2){ // on lui donne deux tableaux de player
 
     int i=0, j=0,k=0;
     while (i<sizeTeam1 && j<sizeTeam2){
         if (arrayTeam1[i]->getId() > arrayTeam2[j]->getId()) {
             arrOfPlayerOf2Teams[k] = arrayTeam1[i];
+            k++;
             i++;
         }
             else{
                 arrOfPlayerOf2Teams[k]= arrayTeam2[j];
+                k++;
                 j++;
             }
         }
-    if (i==sizeTeam1){
+    if (i==sizeTeam1-1){
         while (j<sizeTeam2){
             arrOfPlayerOf2Teams[k] = arrayTeam2[j];
+            k++;
             j++;
         }
     }
         else{
             while (i<sizeTeam1){
                 arrOfPlayerOf2Teams[k] = arrayTeam1[i];
+                k++;
                 i++;
         }
     }
