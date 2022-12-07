@@ -49,7 +49,6 @@ void Team::removePlayer(Player *player){
     addGoals(- player->getGoals());
     player->addGames(m_game_played);
     m_numOfPlayers--;
-    updateBestPlayer();
 }
 
 int Team::getNumOfPlayer() const{
@@ -68,13 +67,10 @@ int Team::getPoints() const{
     return m_points;
 }
 
-void Team::updateBestPlayer(){
+void Team::updateBestTeamPlayer(){
     m_bestTeamPlayer = teamPlayersByGoals.dataOfTheMax();
 }
 
-void Team::updateBestPlayer(Player *player){
-    m_bestTeamPlayer = player;
-}
 
 bool operator>(const Team &team1, const Team &team2) {
     if (team1.getPoints()+team1.getTotalGoal()-team1.getTotalCards()>

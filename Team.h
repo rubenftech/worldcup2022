@@ -17,8 +17,7 @@ public:
     void addCards(int);
     void putAVLid(AVL<int,Player*>);
     void putAVLGoal(AVL<PlayerStats, Player*>);
-    void updateBestPlayer();
-    void updateBestPlayer(Player *player);
+    void updateBestTeamPlayer();
     void addGoalKeeper(int def=1);
 
     int getTeamId()const;
@@ -36,7 +35,7 @@ public:
 private:
     AVL<int, Player*> teamPlayersById;
     AVL<PlayerStats, Player*> teamPlayersByGoals;
-    Player* m_bestTeamPlayer;
+    Player* m_bestTeamPlayer= nullptr;
 
     int m_numOfGoalKeeper=0;
     int m_team_id;
@@ -44,7 +43,7 @@ private:
     int m_points;
     int m_total_goal;
     int m_total_cards;
-    int m_game_played;
+    int m_game_played=0;
 
 };
 bool operator>(const Team& team1, const Team& team2);

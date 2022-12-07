@@ -1,14 +1,14 @@
-// 
+//
 // 234218 Data Structures 1.
 // Semester: 2023A (winter).
 // Wet Exercise #1.
-// 
+//
 // Recommended TAB size to view this file: 8.
-// 
+//
 // The following main file is necessary to link and run your code.
 // This file is READ ONLY: even if you submit something else, the compiler ..
 // .. WILL use our file.
-// 
+//
 
 #include "worldcup23a1.h"
 #include <string>
@@ -23,13 +23,13 @@ void query_get_all_players(string cmd, world_cup_t *obj, int teamID);
 int main()
 {
     cin >> std::boolalpha;
-	
+
     int d1, d2, d3, d4, d5;
     bool b1;
 
     // Init
 	world_cup_t *obj = new world_cup_t();
-	
+
     // Execute all commands in file
 	string op;
 	while (cin >> op)
@@ -87,7 +87,7 @@ int main()
         }
     }
 
-    // Quit 
+    // Quit
 	delete obj;
 	return 0;
 }
@@ -101,7 +101,7 @@ static const char *StatusTypeStr[] =
 	"FAILURE"
 };
 
-void print(string cmd, StatusType res) 
+void print(string cmd, StatusType res)
 {
 	cout << cmd << ": " << StatusTypeStr[(int) res] << endl;
 }

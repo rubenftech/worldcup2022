@@ -156,27 +156,28 @@ class AVL{
 
     }//print node's data with in-order traversal
 
-    void AVL_to_array_inorder(S *arr, int* i){
-        AVL_to_array_inorder_helper(root,arr,i);
+    void AVL_to_array_inorder(S **arr){
+        AVL_to_array_inorder_helper(root,arr);
     }
 
-    void AVL_to_array_inorder_helper(Node<T,S>* firstNode,S *arr, int* i){
+    void AVL_to_array_inorder_helper(Node<T,S>* firstNode,S **arr){
         if(firstNode== nullptr){
             return;
         }
+        int i=0;
         AVL_to_array_inorder_helper(firstNode->left,arr,i);
-        arr[*i]=firstNode->data;
-        (*i)++;
+        *arr[i]=firstNode->data;
+        i++;
         AVL_to_array_inorder_helper(firstNode->right,arr,i);
     }
 
 
 
-    void array_to_AVL_inorder(T* arrKey,S *arrData, int i){
-        array_to_AVL_inorder_helper(root,arrKey,arrData,i);
+    void array_to_AVL_inorder(T **arrKey,S **arrData, int i){
+        array_to_AVL_inorder_helper(root,&arrKey,&arrData,&i);
     }
 
-    void array_to_AVL_inorder_helper(Node<T,S>* firstNode,T * arrKey,S *arrData, int i){
+    void array_to_AVL_inorder_helper(Node<T,S>* firstNode,T **arrKey,S *arrData, int i){
         if(i==0){
             return;
         }
@@ -227,38 +228,43 @@ class AVL{
 /**************************************************************************************/
 
     
-    S getPreviousInorder(T key) const{
+    S getPreviousInorder(T key) const {
 //        if(key == nullptr){
 //            return nullptr;
 //        }
-        Node<T,S>* nearestBefore = root;
-        Node<T,S>* trackNode = root;
-        while(trackNode->key != key){
-            if (trackNode->key < key){
-                if(trackNode->key > nearestBefore->key){
-                    nearestBefore->key = trackNode->key;
+        Node<T, S> *nearestBefore = root;
+        Node<T, S> *trackNode = root;
+        while (trackNode->key != key) {
+            if (trackNode->key < key) {
+                if (trackNode->key > nearestBefore->key) {
+                    nearestBefore = trackNode;
                 }
                 trackNode = trackNode->right;
-            }
-            else{
+            } else {
                 trackNode = trackNode->left;
             }
-            if(trackNode == nullptr){
+            if (trackNode == nullptr) {
                 return nullptr;
             }
         }
-        trackNode = trackNode->left;
-        while (trackNode->right){
-            trackNode = trackNode->right;
+        if(trackNode == root && !(trackNode->left)){
+            return nullptr;
         }
-        if (nearestBefore->key < trackNode->key){
-            return trackNode->data;
-        }
-        else{
-            return nearestBefore->data;
-        }
-    }
+        if (trackNode->left) {
+            trackNode = trackNode->left;
+            while (trackNode->right) {
+                trackNode = trackNode->right;
+            }
 
+            if (nearestBefore->key < trackNode->key) {
+                return trackNode->data;
+            } else {
+                return nearestBefore->data;
+            }
+        }
+        return nearestBefore->data;
+
+    }
     S getNextInorder(T key)const{
 //        if(key == nullptr){
 //            return nullptr;
@@ -271,7 +277,7 @@ class AVL{
             }
             else{
                 if(trackNode->key < nearestNext->key){
-                    nearestNext->key = trackNode->key;
+                    nearestNext = trackNode;
                 }
                 trackNode = trackNode->left;
             }
@@ -279,16 +285,21 @@ class AVL{
                 return nullptr;
             }
         }
-        trackNode = trackNode->right;
-        while (trackNode->left){
+        if(trackNode == root && !(trackNode->right)){
+            return nullptr;
+        }
+        if(trackNode->right) {
             trackNode = trackNode->right;
+            while (trackNode->left) {
+                trackNode = trackNode->right;
+            }
+            if (nearestNext->key > trackNode->key) {
+                return trackNode->data;
+            } else {
+                return nearestNext->data;
+            }
         }
-        if (nearestNext->key > trackNode->key){
-            return trackNode->data;
-        }
-        else{
-            return nearestNext->data;
-        }
+        return nearestNext->data;
     }
 
 

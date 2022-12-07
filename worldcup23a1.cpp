@@ -42,6 +42,9 @@ StatusType world_cup_t::remove_team(int teamId){
     if (teamId <= 0){
         return StatusType::INVALID_INPUT;
     }
+    if (!AVL_team_by_id.find(teamId)||AVL_team_by_id.find(teamId)->data->getNumOfPlayer()>0){
+        return StatusType::FAILURE;
+    }
     Node<int, Team *> *to_delete = AVL_team_by_id.find(teamId);
     if (to_delete){
         if (to_delete->data->isValid()){
@@ -59,7 +62,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     if (playerId <= 0 || teamId <= 0 || gamesPlayed < 0 || goals < 0 || cards < 0 || ((gamesPlayed == 0) && (cards > 0 || goals > 0))){
         return StatusType::INVALID_INPUT;
     }
-    if (!AVL_team_by_id.find(teamId) || AVL_all_players_by_id.find(playerId)){
+    if (!AVL_team_by_id.root||!AVL_team_by_id.find(teamId) || AVL_all_players_by_id.find(playerId)){
         return StatusType::FAILURE;
     }
     Player *player_to_add;
@@ -77,6 +80,9 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     }
     player_to_add->updatePreviousInRank(AVL_all_players_by_goals);
     player_to_add->updateNextInRank(AVL_all_players_by_goals);
+    player_to_add->getTeam()->updateBestTeamPlayer();
+    updateBestAllPlayer();
+
     num_of_players++;
     return StatusType::SUCCESS;
 }
@@ -89,14 +95,22 @@ StatusType world_cup_t::remove_player(int playerId){
         return StatusType::FAILURE;
     }
     Player* player_to_remove= AVL_all_players_by_id.find(playerId)->data;
+    Player* previousInRank = player_to_remove->getPreviousInRank();
+    Player* nextInRank = player_to_remove->getNextInRank();
     AVL_all_players_by_goals.remove(player_to_remove->getPlayerStats());
-    player_to_remove->getPreviousInRank()->updateNextInRank(AVL_all_players_by_goals);
-    player_to_remove->getNextInRank()->updateNextInRank(AVL_all_players_by_goals);
+    if(previousInRank) {
+        previousInRank->setNextInRank(nextInRank);
+    }
+    if(nextInRank) {
+        nextInRank->setPreviousInRank(previousInRank);
+    }
     AVL_all_players_by_id.remove(playerId);
     if (!player_to_remove->getTeam()->isValid()){
         AVL_valid_team.remove(player_to_remove->getTeam()->getTeamId());
     }
     player_to_remove->getTeam()->removePlayer(player_to_remove);
+    player_to_remove->getTeam()->updateBestTeamPlayer();
+    updateBestAllPlayer();
     return StatusType::SUCCESS;
 }
 
@@ -119,7 +133,8 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
     playerToUpdate->getTeam()->addCards(scoredGoals-playerToUpdate->getCards());
     playerToUpdate->updatePreviousInRank(AVL_all_players_by_goals);
     playerToUpdate->updateNextInRank(AVL_all_players_by_goals);
-    playerToUpdate->getTeam()->updateBestPlayer();
+    playerToUpdate->getTeam()->updateBestTeamPlayer();
+    updateBestAllPlayer();
 	return StatusType::SUCCESS;
 }
 
@@ -184,14 +199,13 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     Player** arr_player_team2_byId= new Player*[team2->getNumOfPlayer()];
     Player** arr_player_team2_byGoals=new Player*[team2->getNumOfPlayer()];
 
-    int i=0,j=0;
-    team1->getAvlTeamPlayersById()->AVL_to_array_inorder(arr_player_team1_byId, &i);//create an array of player by Id
-    team1->getAvlTeamPlayersByGoals()->AVL_to_array_inorder(arr_player_team1_byGoals,&j); //create an array of player by goal
+    team1->getAvlTeamPlayersById()->AVL_to_array_inorder(&arr_player_team1_byId);//create an array of player by Id
+    team1->getAvlTeamPlayersByGoals()->AVL_to_array_inorder(&arr_player_team1_byGoals); //create an array of player by goal
 
     int num_of_players_team2 = team2->getNumOfPlayer();
-    team2->getAvlTeamPlayersById()->AVL_to_array_inorder(arr_player_team2_byId, &num_of_players_team2);
+    team2->getAvlTeamPlayersById()->AVL_to_array_inorder(&arr_player_team2_byId);
     num_of_players_team2 = team2->getNumOfPlayer();
-    team2->getAvlTeamPlayersByGoals()->AVL_to_array_inorder(arr_player_team2_byGoals, &num_of_players_team2);
+    team2->getAvlTeamPlayersByGoals()->AVL_to_array_inorder(&arr_player_team2_byGoals);
 
 
     Player **arr_player_newTeam_byId = nullptr;
@@ -253,10 +267,11 @@ output_t<int> world_cup_t::get_all_players_count(int teamId){
     if (teamId < 0){
         return num_of_players;
     }
-    Team *team = AVL_team_by_id.find(teamId)->data;
-    if (!team){
+    if (!AVL_team_by_id.find(teamId)){
         return StatusType::FAILURE;
     }
+    Team *team = AVL_team_by_id.find(teamId)->data;
+
     return team->getNumOfPlayer();
 }
 
@@ -267,19 +282,21 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output){
     }
     if (teamId < 0){
         Player *actualPlayer = best_player_all;
-        for (int i = num_of_players; i > 0; i--){
+        for (int i = num_of_players-1; i >= 0; i--){
             output[i] = actualPlayer->getId();
             actualPlayer = actualPlayer->getPreviousInRank();
         }
+        return StatusType::SUCCESS;
     }
     if (teamId > 0){
-        Team *team = AVL_team_by_id.find(teamId)->data;
-        if (team == nullptr){
+
+        if (!AVL_team_by_id.find(teamId)){
             return StatusType::FAILURE;
         }
-        Player **playersArr = new Player *[team->getNumOfPlayer()];
+        Team *team = AVL_team_by_id.find(teamId)->data;
+        Player **playersArr = new Player* [team->getNumOfPlayer()];
         AVL<PlayerStats, Player *> *playersByGoals = team->getAvlTeamPlayersByGoals();
-        playersByGoals->AVL_to_array_inorder(playersArr, 0);
+        playersByGoals->AVL_to_array_inorder(&playersArr);
         for (int i = 0; i < team->getNumOfPlayer(); i++){
             output[i] = playersArr[i]->getId();
         }
@@ -416,4 +433,6 @@ Player** world_cup_t::mergeId(Player* arrayTeam1[], Player* arrayTeam2[],Player*
     return arrOfPlayerOf2Teams;
 }
 
-
+void world_cup_t::updateBestAllPlayer(){
+    best_player_all = AVL_all_players_by_goals.dataOfTheMax();
+}

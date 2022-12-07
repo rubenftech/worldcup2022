@@ -32,13 +32,13 @@ private:
     AVL<PlayerStats, Player*> AVL_all_players_by_goals; // arbre de tous les joueurs key = goal
     AVL<int , Team*> AVL_valid_team;
     Player* best_player_all = nullptr; // meilleur de tous les joueurs
-	int num_of_players;
-	int num_of_valid_teams;
+	int num_of_players=0;
+	int num_of_valid_teams=0;
 
 public:
     static Player** mergeId(Player**, Player**,Player** ,int, int);
     static Player **mergeGoal(Player **arrayTeam1, Player **arrayTeam2,Player** , int player, int player1);
-
+    void updateBestAllPlayer();
     // <DO-NOT-MODIFY> {
 	
 	world_cup_t();
