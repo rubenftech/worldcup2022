@@ -210,14 +210,14 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
 
     Player **arr_player_newTeam_byId = nullptr;
     mergeId (arr_player_team1_byId, arr_player_team2_byId, arr_player_newTeam_byId, team1->getNumOfPlayer(), team2->getNumOfPlayer());
-    int arr_id_newTeam_byId[team1->getNumOfPlayer()+team2->getNumOfPlayer()];
+    int** arr_id_newTeam_byId=new int*[team1->getNumOfPlayer()+team2->getNumOfPlayer()];
     Player **arr_player_newTeam_byGoals = nullptr;
     mergeGoal(arr_player_team1_byGoals,arr_player_team2_byGoals,arr_player_newTeam_byGoals,team1->getNumOfPlayer(), team2->getNumOfPlayer());
 
-    PlayerStats arr_stats_newTeam_byGoals[team1->getNumOfPlayer()+team2->getNumOfPlayer()];
+    PlayerStats** arr_stats_newTeam_byGoals = new PlayerStats*[team1->getNumOfPlayer()+team2->getNumOfPlayer()];
     for(int i = 0; i<team1->getNumOfPlayer()+team2->getNumOfPlayer(); i++){
-        arr_id_newTeam_byId[i] = arr_player_newTeam_byId[i]->getId();
-        arr_stats_newTeam_byGoals[i] = arr_player_newTeam_byGoals[i]->getStats();
+        *arr_id_newTeam_byId[i] = arr_player_newTeam_byId[i]->getId();
+        *arr_stats_newTeam_byGoals[i] = arr_player_newTeam_byGoals[i]->getStats();
     }
 
     Team* newTeam = new Team(  newTeamId,
@@ -230,8 +230,8 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     AVL<int, Player*> AVLTeamId; // create the 2 new trees
     AVL<PlayerStats, Player*> AVLTeamGoal;
 
-    AVLTeamId.array_to_AVL_inorder(arr_id_newTeam_byId, arr_player_newTeam_byId,  team1->getNumOfPlayer()+team2->getNumOfPlayer()); // put the arrays into trees
-    AVLTeamGoal.array_to_AVL_inorder(arr_stats_newTeam_byGoals, arr_player_newTeam_byGoals,  team1->getNumOfPlayer()+team2->getNumOfPlayer());
+    AVLTeamId.array_to_AVL_inorder(arr_id_newTeam_byId, &arr_player_newTeam_byId,  team1->getNumOfPlayer()+team2->getNumOfPlayer()); // put the arrays into trees
+    AVLTeamGoal.array_to_AVL_inorder(arr_stats_newTeam_byGoals, &arr_player_newTeam_byGoals,  team1->getNumOfPlayer()+team2->getNumOfPlayer());
 
     newTeam->putAVLid(AVLTeamId); //put the trees into the team
     newTeam->putAVLGoal(AVLTeamGoal);
