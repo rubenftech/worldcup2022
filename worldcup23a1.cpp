@@ -374,6 +374,9 @@ int getConcurrentTeams(AVL<int, Team*>* AVL_valid_team, int minTeamId, int maxTe
 
 
 output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
+    if (minTeamId<0||maxTeamId<0||maxTeamId<minTeamId){
+        return StatusType::INVALID_INPUT;
+    }
     team_score_node* first_node = new team_score_node();
     first_node->next_node = nullptr;
     first_node->id = 0;
