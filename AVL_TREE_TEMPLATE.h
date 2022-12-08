@@ -19,7 +19,7 @@ public:
 
 template<class T, class S>
 class AVL{
-    public:
+public:
     Node<T,S>* root;
     int size;
 
@@ -83,7 +83,7 @@ class AVL{
 
         if (node == nullptr){ //not found
             return nullptr;
-        } 
+        }
         else if (key < node->key){
             node->left = removeFunc(node->left, key);
         }
@@ -185,7 +185,7 @@ class AVL{
         firstNode->key =arrKey[i/2];
         firstNode->data = arrData[i/2];
         firstNode->left = nullptr;
-        firstNode->right = nullptr; 
+        firstNode->right = nullptr;
         array_to_AVL_inorder_helper(firstNode->left,arrKey,arrData,(i/2));
         array_to_AVL_inorder_helper(firstNode->right, arrKey+((i/2)+1), arrData+((i/2)+1), i-((i/2)+1));
     }
@@ -221,13 +221,13 @@ class AVL{
         else
             return findMax(node->right);
     }
-    
+
     S dataOfTheMax() const{
         return findMax(root)->data;
     }
 /**************************************************************************************/
 
-    
+
     S getPreviousInorder(T key) const {
 //        if(key == nullptr){
 //            return nullptr;
