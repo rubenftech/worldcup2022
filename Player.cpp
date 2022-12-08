@@ -25,7 +25,7 @@ bool operator>(const PlayerStats& player1, const PlayerStats& player2){
 }
 
 bool operator<(const PlayerStats& player1, const PlayerStats& player2){
-    return !(player1 > player2) && (player1 != player2);
+    return (!(player1 > player2) && (player1 != player2));
 }
 
 
