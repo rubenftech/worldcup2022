@@ -212,10 +212,10 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     Player** arr_player_team2_byId= new Player*[team2->getNumOfPlayer()];
     Player** arr_player_team2_byGoals=new Player*[team2->getNumOfPlayer()];
 
-    team1->getAvlTeamPlayersById()->AVL_to_array_inorder(&arr_player_team1_byId);//create an array of player by Id
-    team1->getAvlTeamPlayersByGoals()->AVL_to_array_inorder(&arr_player_team1_byGoals); //create an array of player by goal
-    team2->getAvlTeamPlayersById()->AVL_to_array_inorder(&arr_player_team2_byId);
-    team2->getAvlTeamPlayersByGoals()->AVL_to_array_inorder(&arr_player_team2_byGoals);
+    team1->getAvlTeamPlayersById()->AVL_to_array_inorder(arr_player_team1_byId);//create an array of player by Id
+    team1->getAvlTeamPlayersByGoals()->AVL_to_array_inorder(arr_player_team1_byGoals); //create an array of player by goal
+    team2->getAvlTeamPlayersById()->AVL_to_array_inorder(arr_player_team2_byId);
+    team2->getAvlTeamPlayersByGoals()->AVL_to_array_inorder(arr_player_team2_byGoals);
 
 
     Player **arr_player_newTeam_byId = new Player*[num_player_newTeam_byId];
@@ -321,7 +321,7 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output){
         Team *team = AVL_team_by_id.find(teamId)->data;
         Player **playersArr = new Player* [team->getNumOfPlayer()];
         AVL<PlayerStats, Player *> *playersByGoals = team->getAvlTeamPlayersByGoals();
-        playersByGoals->AVL_to_array_inorder(&playersArr);
+        playersByGoals->AVL_to_array_inorder(playersArr);
         for (int i = 0; i < team->getNumOfPlayer(); i++){
             output[i] = playersArr[i]->getId();
         }
