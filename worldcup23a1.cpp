@@ -226,10 +226,6 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     mergeId ( arr_player_team1_byId, arr_player_team2_byId, arr_player_newTeam_byId, team1->getNumOfPlayer(), team2->getNumOfPlayer());
     mergeGoal(arr_player_team1_byGoals,arr_player_team2_byGoals,arr_player_newTeam_byStats,team1->getNumOfPlayer(), team2->getNumOfPlayer());
 
-    for(int i = 0; i < num_player_newTeam_byId; i++){
-        arr_id[i]= arr_player_newTeam_byId[i]->getId() ;
-        arr_stats[i] = arr_player_newTeam_byStats[i]->getPlayerStats();
-    }
 
     Team* newTeam = new Team(  newTeamId,
                                team1->getPoints()+team2->getPoints(),
@@ -237,6 +233,11 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
                                team1->getTotalGoal()+team2->getTotalGoal(),
                                team1->getTotalCards() + team2->getTotalCards());
 
+    for(int i = 0; i < num_player_newTeam_byId; i++){
+        arr_id[i]= arr_player_newTeam_byId[i]->getId() ;
+        arr_stats[i] = arr_player_newTeam_byStats[i]->getPlayerStats();
+        arr_player_newTeam_byId[i]->setTeam(newTeam);
+    }
 
     AVL<int, Player*> AVLTeamId = AVL<int, Player*>(); // create the 2 new trees
     AVL<PlayerStats, Player*> AVLTeamGoal= AVL<PlayerStats, Player*>() ;
