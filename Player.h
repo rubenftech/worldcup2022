@@ -34,9 +34,7 @@ public:
     void setTeam(Team* teamPtr);
     void setPreviousInRank(Player* player);
     void setNextInRank(Player* player);
-    void updatePreviousInRank(AVL<PlayerStats, Player*>& rankedTree);
-    void updateNextInRank(AVL<PlayerStats, Player*>& rankedTree);
-
+    void updatePreviousAndNextInRank(AVL<PlayerStats, Player*>& rankedTree);
     int getId()const;
     int getNumGames() const;
     int getCards() const;
