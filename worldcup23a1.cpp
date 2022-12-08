@@ -397,6 +397,9 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
     first_node->score = 0;
     int numOfConcurentTeams = getConcurrentTeams(&AVL_valid_team, minTeamId, maxTeamId, first_node);
     team_score_node* currentTeam = nullptr;
+    if(numOfConcurentTeams == 0){
+        return StatusType::FAILURE;
+    }
     while(numOfConcurentTeams > 1){
         currentTeam = first_node;
         while (currentTeam->next_node && currentTeam->next_node->next_node){
@@ -421,7 +424,7 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
     delete first_node->next_node;
     delete first_node;
     return winnerId;
-    return StatusType::FAILURE;
+
 
 }
 
