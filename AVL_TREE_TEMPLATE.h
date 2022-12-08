@@ -222,7 +222,7 @@ class AVL{
             return findMax(node->right);
     }
     
-    S dataOfTheMax() const{
+    S dataOfTheMax() const{ 
         return findMax(root)->data;
     }
 /**************************************************************************************/
