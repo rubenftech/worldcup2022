@@ -488,5 +488,10 @@ void world_cup_t::mergeId(Player** arrayTeam1, Player** arrayTeam2,Player** arrO
 }
 
 void world_cup_t::updateBestAllPlayer(){
-    best_player_all = AVL_all_players_by_goals.dataOfTheMax();
+    if (num_of_players==0){
+        best_player_all= nullptr;
+    }
+    else {
+        best_player_all = AVL_all_players_by_goals.dataOfTheMax();
+    }
 }
