@@ -74,7 +74,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     num_of_players++;
     AVL_all_players_by_id.insert(player_to_add->getId(), player_to_add);
     AVL_all_players_by_goals.insert(player_to_add->getPlayerStats(), player_to_add);
-    (AVL_team_by_id.find(teamId))->data->addPlayer(player_to_add);
+    AVL_team_by_id.find(teamId)->data->addPlayer(player_to_add);
     if  (!(AVL_valid_team.find(teamId))&&AVL_team_by_id.find(teamId)->data->isValid()){
         AVL_valid_team.insert(teamId,AVL_team_by_id.find(teamId)->data);
     }
@@ -159,16 +159,16 @@ StatusType world_cup_t::play_match(int teamId1, int teamId2){
     }
     Team *team1 = AVL_team_by_id.find(teamId1)->data;
     Team *team2 = AVL_team_by_id.find(teamId2)->data;
-    if (team1->getNumOfPlayer() < 11 || team2->getNumOfPlayer() < 11){
+    if (!(team1->isValid()) || !(team2->isValid())){
         return StatusType::FAILURE;
     }
     if (team1 > team2){
         team1->addPoints(3);
     }
-    else if (team2 < team1){
+    if (team2 < team1){
         team2->addPoints(3);
     }
-    else{
+    if (team2==team1){
         team1->addPoints(1);
         team2->addPoints(1);
     }
