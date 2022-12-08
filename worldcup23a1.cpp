@@ -220,7 +220,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     int* arr_id = new int[num_player_newTeam_byId];
     PlayerStats* arr_stats= new PlayerStats[num_player_newTeam_byId];
 
-    mergeId ( &arr_player_team1_byId, &arr_player_team2_byId, &arr_player_newTeam_byId, team1->getNumOfPlayer(), team2->getNumOfPlayer());
+    mergeId ( arr_player_team1_byId, arr_player_team2_byId, arr_player_newTeam_byId, team1->getNumOfPlayer(), team2->getNumOfPlayer());
     mergeGoal(arr_player_team1_byGoals,arr_player_team2_byGoals,arr_player_newTeam_byStats,team1->getNumOfPlayer(), team2->getNumOfPlayer());
 
     for(int i = 0; i < num_player_newTeam_byId; i++){
@@ -393,7 +393,7 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
 }
 
 
-Player **world_cup_t::mergeGoal (Player* arrayTeam1[], Player* arrayTeam2[],Player* arrOfPlayerOf2Teams[], int sizeTeam1, int sizeTeam2) { // on lui donne deux tableaux de player
+void world_cup_t::mergeGoal (Player* arrayTeam1[], Player* arrayTeam2[],Player* arrOfPlayerOf2Teams[], int sizeTeam1, int sizeTeam2) { // on lui donne deux tableaux de player
 
     int i = 0, j = 0, k = 0;
     while (i < sizeTeam1 && j < sizeTeam2) {
@@ -420,28 +420,27 @@ Player **world_cup_t::mergeGoal (Player* arrayTeam1[], Player* arrayTeam2[],Play
             k++;
         }
     }
-    return arrOfPlayerOf2Teams;
 }
 
 
-void world_cup_t::mergeId(Player*** arrayTeam1, Player*** arrayTeam2,Player*** arrOfPlayerOf2Teams, int sizeTeam1, int sizeTeam2){ // on lui donne deux tableaux de player
+void world_cup_t::mergeId(Player** arrayTeam1, Player** arrayTeam2,Player** arrOfPlayerOf2Teams, int sizeTeam1, int sizeTeam2){ // on lui donne deux tableaux de player
 
     int i=0, j=0,k=0;
     while (i<sizeTeam1 && j<sizeTeam2){
-        if ((*arrayTeam1)[i]->getId() < (*arrayTeam2)[j]->getId()) {
-            (*arrOfPlayerOf2Teams)[k] = (*arrayTeam1)[i];
+        if ((arrayTeam1)[i]->getId() < (arrayTeam2)[j]->getId()) {
+            (arrOfPlayerOf2Teams)[k] = (arrayTeam1)[i];
             k++;
             i++;
         }
             else{
-            (*arrOfPlayerOf2Teams)[k] = (*arrayTeam2)[j];
+            (arrOfPlayerOf2Teams)[k] = (arrayTeam2)[j];
                 k++;
                 j++;
             }
         }
     if (i==sizeTeam1){
         while (j<sizeTeam2){
-            (*arrOfPlayerOf2Teams)[k] = (*arrayTeam2)[j];
+            (arrOfPlayerOf2Teams)[k] = (arrayTeam2)[j];
             k++;
             j++;
         }

@@ -36,8 +36,8 @@ private:
 	int num_of_valid_teams=0;
 
 public:
-    static void mergeId(Player***, Player***,Player*** ,int, int);
-    static Player **mergeGoal(Player **arrayTeam1, Player **arrayTeam2,Player** , int player, int player1);
+    static void mergeId(Player**, Player**,Player** ,int, int);
+    static void mergeGoal(Player **arrayTeam1, Player **arrayTeam2,Player** , int player, int player1);
     void updateBestAllPlayer();
     // <DO-NOT-MODIFY> {
 	
