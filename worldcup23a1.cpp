@@ -147,9 +147,12 @@ StatusType world_cup_t::play_match(int teamId1, int teamId2){
     if (teamId2 <= 0 || teamId1 <= 0 || teamId1 == teamId2){
         return StatusType::INVALID_INPUT;
     }
+    if(!AVL_team_by_id.find(teamId1) || !AVL_team_by_id.find(teamId2)){
+        return StatusType::FAILURE;
+    }
     Team *team1 = AVL_team_by_id.find(teamId1)->data;
     Team *team2 = AVL_team_by_id.find(teamId2)->data;
-    if (team1 == nullptr || team2 == nullptr || team1->getNumOfPlayer() < 11 || team2->getNumOfPlayer() < 11){
+    if (team1->getNumOfPlayer() < 11 || team2->getNumOfPlayer() < 11){
         return StatusType::FAILURE;
     }
     if (team1 > team2){
