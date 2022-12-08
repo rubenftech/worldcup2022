@@ -110,7 +110,7 @@ StatusType world_cup_t::remove_player(int playerId){
 
     player_to_remove->getTeam()->removePlayer(player_to_remove);
     player_to_remove->getTeam()->updateBestTeamPlayer();
-    if (!(player_to_remove->getTeam()->isValid())){
+    if (!(player_to_remove->getTeam()->isValid())&&AVL_valid_team.find(player_to_remove->getTeam()->getTeamId())){
         AVL_valid_team.remove(player_to_remove->getTeam()->getTeamId());
     }
     num_of_players--;
@@ -266,6 +266,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     if (!(AVL_valid_team.find(newTeamId))&&AVL_team_by_id.find(newTeamId)->data->isValid()){
         AVL_valid_team.insert(newTeam->getTeamId(), newTeam);
     }
+
     delete[]arr_player_team1_byId;
     delete[]arr_player_team1_byGoals;
     delete[]arr_player_team2_byId;
