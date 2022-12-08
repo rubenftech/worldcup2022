@@ -352,7 +352,7 @@ output_t<int> world_cup_t::get_closest_player(int playerId, int teamId){
 }
 
 void getConcurrentTeamsHelper(Node<int, Team *> *actualNode, int minTeamId,
-                              int maxTeamId, team_score_node *actualNodeInLinkedList, int *numOfTeams){
+                              int maxTeamId, team_score_node **actualNodeInLinkedList, int *numOfTeams){
     if(!actualNode){
         return;
     }
@@ -365,8 +365,8 @@ void getConcurrentTeamsHelper(Node<int, Team *> *actualNode, int minTeamId,
         newNode->id = actualNode->data->getTeamId();
         newNode-> score =  actualNode->data->getPoints() + actualNode->data->getTotalGoal()
                            -actualNode->data->getTotalCards();
-        actualNodeInLinkedList->next_node = newNode;
-        actualNodeInLinkedList = actualNodeInLinkedList->next_node;
+        (*actualNodeInLinkedList)->next_node = newNode;
+        *actualNodeInLinkedList = (*actualNodeInLinkedList)->next_node;
         (*numOfTeams)++;
     }
     if(actualNode->key < maxTeamId){
@@ -376,7 +376,8 @@ void getConcurrentTeamsHelper(Node<int, Team *> *actualNode, int minTeamId,
 
 int getConcurrentTeams(AVL<int, Team*>* AVL_valid_team, int minTeamId, int maxTeamId, team_score_node* first_node){
     int numOfTeams = 0;
-    getConcurrentTeamsHelper(AVL_valid_team->root, minTeamId, maxTeamId, first_node, &numOfTeams);
+    team_score_node** adressOfTheNodePtr = &first_node;
+    getConcurrentTeamsHelper(AVL_valid_team->root, minTeamId, maxTeamId, adressOfTheNodePtr, &numOfTeams);
     return numOfTeams;
 
 }
