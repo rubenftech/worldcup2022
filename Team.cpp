@@ -143,5 +143,9 @@ void Team::putZeroPlayer() {
     m_numOfPlayers=0;
 }
 
+int Team::getNumOfGoalKeeper() {
+    return m_numOfGoalKeeper;
+}
+
 
 
