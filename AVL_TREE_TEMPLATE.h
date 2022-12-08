@@ -19,7 +19,7 @@ public:
 
 template<class T, class S>
 class AVL{
-    public:
+public:
     Node<T,S>* root;
     int size;
 
@@ -83,7 +83,7 @@ class AVL{
 
         if (node == nullptr){ //not found
             return nullptr;
-        } 
+        }
         else if (key < node->key){
             node->left = removeFunc(node->left, key);
         }
@@ -175,8 +175,10 @@ class AVL{
 
     void array_to_AVL_inorder(T *arrKey,S *arrData, int i){
         array_to_AVL_inorder_helper(&root, arrKey, arrData, i);
+        array_to_AVL_inorder_helper(&root, arrKey, arrData, i);
     }
 
+    void array_to_AVL_inorder_helper(Node<T,S>** firstNode,T *arrKey,S *arrData, int i){
     void array_to_AVL_inorder_helper(Node<T,S>** firstNode,T *arrKey,S *arrData, int i){
         if(i==0){
             return;
@@ -186,6 +188,14 @@ class AVL{
         (*firstNode)->data = arrData[i/2];
         (*firstNode)->left = nullptr;
         (*firstNode)->right = nullptr; 
+        size++;
+        array_to_AVL_inorder_helper(&((*firstNode)->left),arrKey,arrData,(i/2));
+        array_to_AVL_inorder_helper(&((*firstNode)->right), arrKey+((i/2)+1), arrData+((i/2)+1), i-((i/2)+1));
+        *firstNode = new Node<T,S>;
+        (*firstNode)->key =arrKey[i/2];
+        (*firstNode)->data = arrData[i/2];
+        (*firstNode)->left = nullptr;
+        (*firstNode)->right = nullptr;
         size++;
         array_to_AVL_inorder_helper(&((*firstNode)->left),arrKey,arrData,(i/2));
         array_to_AVL_inorder_helper(&((*firstNode)->right), arrKey+((i/2)+1), arrData+((i/2)+1), i-((i/2)+1));
@@ -222,13 +232,13 @@ class AVL{
         else
             return findMax(node->right);
     }
-    
-    S dataOfTheMax() const{ 
+
+    S dataOfTheMax() const{
         return findMax(root)->data;
     }
 /**************************************************************************************/
 
-    
+
     S getPreviousInorder(T key) const {
 //        if(key == nullptr){
 //            return nullptr;

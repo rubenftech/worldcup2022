@@ -100,20 +100,20 @@ Player* Team::getBestPlayer() const{
     return m_bestTeamPlayer;
 }
 
-AVL<int, Player*>* Team::getAvlTeamPlayersById(){
+AVL<int, Player*>* Team::getAvlTeamPlayersById()&{
     return (&teamPlayersById);
 }
 
-AVL<PlayerStats, Player*>* Team::getAvlTeamPlayersByGoals(){
+AVL<PlayerStats, Player*>* Team::getAvlTeamPlayersByGoals()&{
     return (&teamPlayersByGoals);
 }
 
-void Team::putAVLid(AVL<int,Player*> tree ) {
-    teamPlayersById=tree;
+void Team::putAVLid(AVL<int,Player*>* tree ) {
+    teamPlayersById = *tree;
 }
 
-void Team::putAVLGoal(AVL<PlayerStats, Player *> tree) {
-    teamPlayersByGoals=tree;
+void Team::putAVLGoal(AVL<PlayerStats, Player *>* tree) {
+    teamPlayersByGoals=*tree;
 }
 
 void Team::addGoalKeeper(int num) {

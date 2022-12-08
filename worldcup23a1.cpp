@@ -110,13 +110,14 @@ StatusType world_cup_t::remove_player(int playerId){
     }
     player_to_remove->getTeam()->removePlayer(player_to_remove);
     player_to_remove->getTeam()->updateBestTeamPlayer();
+    num_of_players--;
     updateBestAllPlayer();
     return StatusType::SUCCESS;
 }
 
 
 StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
-                                        int scoredGoals, int cardsReceived){
+                                            int scoredGoals, int cardsReceived){
 
     if (playerId<=0||gamesPlayed<0||scoredGoals<0||cardsReceived<0){
         return StatusType::INVALID_INPUT;
@@ -124,22 +125,22 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
     if (!AVL_all_players_by_id.find(playerId)){
         return StatusType::FAILURE;
     }
-    bool goalkeeper = AVL_all_players_by_id.find(playerId)->data->isGoalKeeper();
-    int teamId =AVL_all_players_by_id.find(playerId)->data->getTeam()->getTeamId();
-    remove_player(playerId);
-    add_player(playerId,teamId, gamesPlayed,scoredGoals,cardsReceived,goalkeeper);
-//    Player* playerToUpdate = AVL_all_players_by_id.find(playerId)->data;
-//    playerToUpdate->getTeam()->addGoals(scoredGoals-playerToUpdate->getGoals());
-//    playerToUpdate->getTeam()->addCards(scoredGoals-playerToUpdate->getCards());
-//
-//    playerToUpdate->addGames(gamesPlayed-playerToUpdate->getNumGames());
-//    playerToUpdate->addGoals(scoredGoals-playerToUpdate->getGoals());
-//    playerToUpdate->addCards(cardsReceived-playerToUpdate->getCards());
-//
-//    playerToUpdate->updatePreviousAndNextInRank(AVL_all_players_by_goals);
-//    playerToUpdate->getTeam()->updateBestTeamPlayer();
-//    updateBestAllPlayer();
-return StatusType::SUCCESS;
+//    bool goalkeeper = AVL_all_players_by_id.find(playerId)->data->isGoalKeeper();
+//    int teamId =AVL_all_players_by_id.find(playerId)->data->getTeam()->getTeamId();
+//    remove_player(playerId);
+//    add_player(playerId,teamId, gamesPlayed,scoredGoals,cardsReceived,goalkeeper);
+    Player* playerToUpdate = AVL_all_players_by_id.find(playerId)->data;
+    playerToUpdate->getTeam()->addGoals(scoredGoals);
+    playerToUpdate->getTeam()->addCards(scoredGoals);
+
+    playerToUpdate->addGames(gamesPlayed);
+    playerToUpdate->addGoals(scoredGoals);
+    playerToUpdate->addCards(cardsReceived);
+
+    playerToUpdate->updatePreviousAndNextInRank(AVL_all_players_by_goals);
+    playerToUpdate->getTeam()->updateBestTeamPlayer();
+    updateBestAllPlayer();
+    return StatusType::SUCCESS;
 }
 
 
@@ -347,7 +348,7 @@ int getConcurrentTeams(AVL<int, Team*>* AVL_valid_team, int minTeamId, int maxTe
 
 
 void getConcurrentTeamsHelper(Node<int, Team *> *actualNode, int minTeamId,
-                                     int maxTeamId, team_ptr_node *actualNodeInLinkedList, int *numOfTeams){
+                              int maxTeamId, team_ptr_node *actualNodeInLinkedList, int *numOfTeams){
     if(!actualNode){
         return;
     }
@@ -359,7 +360,7 @@ void getConcurrentTeamsHelper(Node<int, Team *> *actualNode, int minTeamId,
         newNode->next_node = nullptr;
         newNode->teamPtr = actualNode->data;
         newNode-> score =  actualNode->data->getPoints()+actualNode->data->getTotalGoal()
-                                                            -actualNode->data->getTotalCards();
+                           -actualNode->data->getTotalCards();
         actualNodeInLinkedList->next_node = newNode;
         actualNodeInLinkedList = actualNodeInLinkedList->next_node;
         *numOfTeams++;
@@ -443,12 +444,12 @@ void world_cup_t::mergeId(Player** arrayTeam1, Player** arrayTeam2,Player** arrO
             k++;
             i++;
         }
-            else{
+        else{
             (arrOfPlayerOf2Teams)[k] = (arrayTeam2)[j];
-                k++;
-                j++;
-            }
+            k++;
+            j++;
         }
+    }
     if (i==sizeTeam1){
         while (j<sizeTeam2){
             (arrOfPlayerOf2Teams)[k] = (arrayTeam2)[j];
@@ -456,11 +457,11 @@ void world_cup_t::mergeId(Player** arrayTeam1, Player** arrayTeam2,Player** arrO
             j++;
         }
     }
-        else{
-            while (i<sizeTeam1){
-                (arrOfPlayerOf2Teams)[k] = (arrayTeam1)[i];
-                k++;
-                i++;
+    else{
+        while (i<sizeTeam1){
+            (arrOfPlayerOf2Teams)[k] = (arrayTeam1)[i];
+            k++;
+            i++;
         }
     }
 }
