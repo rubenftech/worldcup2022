@@ -125,21 +125,24 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
     if (!AVL_all_players_by_id.find(playerId)){
         return StatusType::FAILURE;
     }
-//    bool goalkeeper = AVL_all_players_by_id.find(playerId)->data->isGoalKeeper();
-//    int teamId =AVL_all_players_by_id.find(playerId)->data->getTeam()->getTeamId();
-//    remove_player(playerId);
-//    add_player(playerId,teamId, gamesPlayed,scoredGoals,cardsReceived,goalkeeper);
-    Player* playerToUpdate = AVL_all_players_by_id.find(playerId)->data;
-    playerToUpdate->getTeam()->addGoals(scoredGoals);
-    playerToUpdate->getTeam()->addCards(scoredGoals);
+    bool goalkeeper = AVL_all_players_by_id.find(playerId)->data->isGoalKeeper();
+    int teamId =AVL_all_players_by_id.find(playerId)->data->getTeam()->getTeamId();
+    int cardsAll= cardsReceived + AVL_all_players_by_id.find(playerId)->data->getCards();
+    int gamesPlayedAll= gamesPlayed + AVL_all_players_by_id.find(playerId)->data->getNumGames();
+    int scoredGoalsAll= scoredGoals + AVL_all_players_by_id.find(playerId)->data->getGoals();
+    remove_player(playerId);
+    add_player(playerId, teamId, gamesPlayedAll, scoredGoalsAll, cardsAll, goalkeeper);
+//    Player* playerToUpdate = AVL_all_players_by_id.find(playerId)->data;
+//    playerToUpdate->getTeam()->addGoals(scoredGoals);
+//    playerToUpdate->getTeam()->addCards(scoredGoals);
+//
+//    playerToUpdate->addGames(gamesPlayed);
+//    playerToUpdate->addGoals(scoredGoals);
+//    playerToUpdate->addCards(cardsReceived);
 
-    playerToUpdate->addGames(gamesPlayed);
-    playerToUpdate->addGoals(scoredGoals);
-    playerToUpdate->addCards(cardsReceived);
-
-    playerToUpdate->updatePreviousAndNextInRank(AVL_all_players_by_goals);
-    playerToUpdate->getTeam()->updateBestTeamPlayer();
-    updateBestAllPlayer();
+//    playerToUpdate->updatePreviousAndNextInRank(AVL_all_players_by_goals);
+//    playerToUpdate->getTeam()->updateBestTeamPlayer();
+//    updateBestAllPlayer();
     return StatusType::SUCCESS;
 }
 
