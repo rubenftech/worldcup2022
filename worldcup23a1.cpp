@@ -125,9 +125,9 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
         return StatusType::FAILURE;
     }
     bool goalkeeper = AVL_all_players_by_id.find(playerId)->data->isGoalKeeper();
-    int id =AVL_all_players_by_id.find(playerId)->data->getTeam()->getTeamId();
-    remove_player(22);
-    add_player(22,id, gamesPlayed,scoredGoals,cardsReceived,goalkeeper);
+    int teamId =AVL_all_players_by_id.find(playerId)->data->getTeam()->getTeamId();
+    remove_player(playerId);
+    add_player(playerId,teamId, gamesPlayed,scoredGoals,cardsReceived,goalkeeper);
 //    Player* playerToUpdate = AVL_all_players_by_id.find(playerId)->data;
 //    playerToUpdate->getTeam()->addGoals(scoredGoals-playerToUpdate->getGoals());
 //    playerToUpdate->getTeam()->addCards(scoredGoals-playerToUpdate->getCards());
@@ -238,8 +238,8 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     AVL<int, Player*> AVLTeamId = AVL<int, Player*>(); // create the 2 new trees
     AVL<PlayerStats, Player*> AVLTeamGoal= AVL<PlayerStats, Player*>() ;
 
-    AVLTeamId.array_to_AVL_inorder(&arr_id, &arr_player_newTeam_byId, num_player_newTeam_byId); // put the arrays into trees
-    AVLTeamGoal.array_to_AVL_inorder(&arr_stats, &arr_player_newTeam_byStats, num_player_newTeam_byId);
+    AVLTeamId.array_to_AVL_inorder(arr_id, arr_player_newTeam_byId, num_player_newTeam_byId); // put the arrays into trees
+    AVLTeamGoal.array_to_AVL_inorder(arr_stats, arr_player_newTeam_byStats, num_player_newTeam_byId);
 
     newTeam->putAVLid(AVLTeamId); //put the trees into the team
     newTeam->putAVLGoal(AVLTeamGoal);
