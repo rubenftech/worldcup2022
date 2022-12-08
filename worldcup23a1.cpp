@@ -462,7 +462,7 @@ void world_cup_t::mergeId(Player** arrayTeam1, Player** arrayTeam2,Player** arrO
     }
         else{
             while (i<sizeTeam1){
-                (*arrOfPlayerOf2Teams)[k] = (*arrayTeam1)[i];
+                (arrOfPlayerOf2Teams)[k] = (arrayTeam1)[i];
                 k++;
                 i++;
         }
