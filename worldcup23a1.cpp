@@ -241,6 +241,8 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
                                team1->getTotalGoal()+team2->getTotalGoal(),
                                team1->getTotalCards() + team2->getTotalCards());
 
+    newTeam->addGoalKeeper(team1->getNumOfGoalKeeper()+team2->getNumOfGoalKeeper());
+
     for(int i = 0; i < num_player_newTeam_byId; i++){
         arr_id[i]= arr_player_newTeam_byId[i]->getId() ;
         arr_stats[i] = arr_player_newTeam_byStats[i]->getPlayerStats();

@@ -21,6 +21,7 @@ public:
     void addGoalKeeper(int def=1);
     void putZeroPlayer();
 
+    int getNumOfGoalKeeper();
     int getTeamId()const;
     int getPoints()const;
     int getNumOfPlayer()const;
