@@ -420,7 +420,7 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
         }
 
     }
-    int winnerId = currentTeam->id;
+    int winnerId = first_node->next_node->id;
     delete first_node->next_node;
     delete first_node;
     return winnerId;
