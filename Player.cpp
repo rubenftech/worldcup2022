@@ -15,10 +15,10 @@ bool operator>(const PlayerStats& player1, const PlayerStats& player2){
     if(player1.m_goals < player2.m_goals){
         return false;
     }
-        if(player1.m_cards > player2.m_cards){
+        if(player1.m_cards < player2.m_cards){
         return true;
     }
-        if(player1.m_cards < player2.m_cards){
+        if(player1.m_cards > player2.m_cards){
         return false;
     }
     return(player1.m_playerId > player2.m_playerId);
