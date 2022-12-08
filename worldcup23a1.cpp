@@ -247,6 +247,11 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     newTeam->putAVLid(AVLTeamId); //put the trees into the team
     newTeam->putAVLGoal(AVLTeamGoal);
 
+    team1->putZeroPlayer();
+    remove_team(teamId1);
+    team2->putZeroPlayer();
+    remove_team(teamId2);
+
 
     if (!AVL_valid_team.find(newTeam->getTeamId()) && AVL_team_by_id.find(newTeamId)->data->isValid()){
         AVL_valid_team.insert(newTeam->getTeamId(), newTeam);
@@ -260,20 +265,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     delete[]arr_player_newTeam_byStats;
     delete[]arr_id;
     delete[]arr_stats;
-    if (newTeamId!=teamId1) {
-        team1->putZeroPlayer();
-        if (AVL_team_by_id.find(teamId1)->data->isValid()) {
-            AVL_valid_team.remove(teamId1);
-        }
-        AVL_team_by_id.remove(teamId1);
-    }
-    if (newTeamId!=teamId2){
-        team2->putZeroPlayer();
-        if (AVL_team_by_id.find(teamId2)->data->isValid()) {
-            AVL_valid_team.remove(teamId2);
-        }
-        AVL_team_by_id.remove(teamId2);
-    }
+
     return StatusType::SUCCESS;
 }
 
