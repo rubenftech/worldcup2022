@@ -16,7 +16,7 @@ world_cup_t::~world_cup_t(){
     AVL_all_players_by_goals.clearTree();
     AVL_valid_team.clearTree();
     AVL_all_players_by_id.clearDataAndTree();
-    
+
 }
 
 
@@ -126,11 +126,13 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
     }
 
     Player* playerToUpdate = AVL_all_players_by_id.find(playerId)->data;
-    playerToUpdate->addGames(gamesPlayed-playerToUpdate->getTeam()->get_game_played());
-    playerToUpdate->addGoals(scoredGoals-playerToUpdate->getGoals());
     playerToUpdate->getTeam()->addGoals(scoredGoals-playerToUpdate->getGoals());
-    playerToUpdate->addCards(cardsReceived-playerToUpdate->getCards());
     playerToUpdate->getTeam()->addCards(scoredGoals-playerToUpdate->getCards());
+
+    playerToUpdate->addGames(gamesPlayed-playerToUpdate->getNumGames());
+    playerToUpdate->addGoals(scoredGoals-playerToUpdate->getGoals());
+    playerToUpdate->addCards(cardsReceived-playerToUpdate->getCards());
+
     playerToUpdate->updatePreviousAndNextInRank(AVL_all_players_by_goals);
     playerToUpdate->getTeam()->updateBestTeamPlayer();
     updateBestAllPlayer();
@@ -176,6 +178,12 @@ output_t<int> world_cup_t::get_num_played_games(int playerId){
 
 
 output_t<int> world_cup_t::get_team_points(int teamId){
+    if (teamId<=0){
+        return StatusType::INVALID_INPUT;
+    }
+    if (!AVL_team_by_id.find(teamId)){
+        return StatusType::FAILURE;
+    }
     return AVL_team_by_id.find(teamId)->data->getPoints();
 }
 
@@ -222,7 +230,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
                                num_player_newTeam_byId,
                                team1->getTotalGoal()+team2->getTotalGoal(),
                                team1->getTotalCards() + team2->getTotalCards());
- 
+
 
     AVL<int, Player*> AVLTeamId = AVL<int, Player*>(); // create the 2 new trees
     AVL<PlayerStats, Player*> AVLTeamGoal= AVL<PlayerStats, Player*>() ;
@@ -251,11 +259,11 @@ output_t<int> world_cup_t::get_top_scorer(int teamId){
     if (teamId < 0){
         return best_player_all->getId();
     }
-    Team *team = AVL_team_by_id.find(teamId)->data;
-    if (!team || !team->getBestPlayer()){
+    else if (!AVL_team_by_id.find(teamId)||!(AVL_team_by_id.find(teamId)->data->getBestPlayer())||(teamId < 0 && num_of_players<=0)){
         return StatusType::FAILURE;
     }
-    return team->getBestPlayer()->getId();
+
+    return AVL_team_by_id.find(teamId)->data->getBestPlayer()->getId();
 }
 
 
@@ -287,8 +295,7 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output){
         }
         return StatusType::SUCCESS;
     }
-    if (teamId > 0){
-
+    else{
         if (!AVL_team_by_id.find(teamId)){
             return StatusType::FAILURE;
         }
@@ -302,21 +309,26 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output){
         delete[] playersArr;
         return StatusType::SUCCESS;
     }
-    return StatusType::FAILURE;
 }
 
 
 output_t<int> world_cup_t::get_closest_player(int playerId, int teamId){
-	return AVL_team_by_id.find(teamId)->data->getAvlTeamPlayersById()->find(playerId)->data->getClosest();
+    if (teamId<=0||playerId<=0){
+        return StatusType::INVALID_INPUT;
+    }
+    if (!AVL_team_by_id.find(teamId)||! AVL_team_by_id.find(teamId)->data->getAvlTeamPlayersById()->find(playerId)||num_of_players<=1){
+        return StatusType::FAILURE;
+    }
+    return AVL_team_by_id.find(teamId)->data->getAvlTeamPlayersById()->find(playerId)->data->getClosest();
 }
 
 
 int getConcurrentTeams(AVL<int, Team*>* AVL_valid_team, int minTeamId, int maxTeamId, team_ptr_node* first_node){
-    int nuOfTeams = 0;
+    int numOfTeams = 0;
     team_ptr_node** actualNodeInLinkedList = &first_node;
-    getConcurrentTeamsHelper(AVL_valid_team->root, minTeamId, maxTeamId, actualNodeInLinkedList, &nuOfTeams);
-    return nuOfTeams;
-    
+    getConcurrentTeamsHelper(AVL_valid_team->root, minTeamId, maxTeamId, actualNodeInLinkedList, &numOfTeams);
+    return numOfTeams;
+
 }
 
 
@@ -368,6 +380,7 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
             numOfConcurentTeams--;
         }
         int winnerId = first_node ->next_node->teamPtr->getTeamId();
+        cout<< winnerId;
         delete first_node->next_node;
         delete first_node;
         return StatusType::SUCCESS;

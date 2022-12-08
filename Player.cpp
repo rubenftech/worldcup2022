@@ -50,7 +50,6 @@ int Player::getId() const{
 }
 
 void Player::addGames(int newGames){
-
     m_gamePlayed+= newGames;
 
 }
@@ -59,9 +58,7 @@ int Player::getNumGames() const{
 }
 
 void Player::addGoals(int newGoals){
-    if (newGoals > 0){
         m_goals+= newGoals;
-    }
 }
 
 int Player::getGoals() const{
@@ -69,9 +66,7 @@ int Player::getGoals() const{
 }
 
 void Player::addCards(int newCards){
-    if (newCards > 0){
         m_cards+= newCards;
-    }
 }
 
 int Player::getCards() const{
