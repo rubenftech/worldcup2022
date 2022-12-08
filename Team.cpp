@@ -14,7 +14,11 @@ Team::Team(int team_id, int team_points, int numOfPlayers, int goal, int cards):
 
 
 
-Team::~Team(){}
+Team::~Team(){
+    putZeroPlayer();
+    teamPlayersByGoals.clearTree();
+    teamPlayersById.clearTree();
+}
 
 
 void Team::addPlayer(Player *player){

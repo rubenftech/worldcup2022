@@ -248,13 +248,9 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     newTeam->putAVLid(AVLTeamId); //put the trees into the team
     newTeam->putAVLGoal(AVLTeamGoal);
 
-    team1->getAvlTeamPlayersById()->clearTree();
-    team1->getAvlTeamPlayersByGoals()->clearTree();
-    team1->putZeroPlayer();
+    delete team1;
     remove_team(teamId1);
-    team2->getAvlTeamPlayersById()->clearTree();
-    team2->getAvlTeamPlayersByGoals()->clearTree();
-    team2->putZeroPlayer();
+    delete team2;
     remove_team(teamId2);
 
     AVL_team_by_id.insert(newTeamId, newTeam);
