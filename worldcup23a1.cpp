@@ -162,13 +162,14 @@ StatusType world_cup_t::play_match(int teamId1, int teamId2){
     if (!(team1->isValid()) || !(team2->isValid())){
         return StatusType::FAILURE;
     }
+
     if (team1 > team2){
         team1->addPoints(3);
     }
-    if (team2 < team1){
+   else if (team2 > team1){
         team2->addPoints(3);
     }
-    if (team2==team1){
+    else{
         team1->addPoints(1);
         team2->addPoints(1);
     }
