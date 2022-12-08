@@ -110,13 +110,14 @@ StatusType world_cup_t::remove_player(int playerId){
     }
     player_to_remove->getTeam()->removePlayer(player_to_remove);
     player_to_remove->getTeam()->updateBestTeamPlayer();
+    num_of_players--;
     updateBestAllPlayer();
     return StatusType::SUCCESS;
 }
 
 
 StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
-                                        int scoredGoals, int cardsReceived){
+                                            int scoredGoals, int cardsReceived){
 
     if (playerId<=0||gamesPlayed<0||scoredGoals<0||cardsReceived<0){
         return StatusType::INVALID_INPUT;
@@ -139,7 +140,7 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
     playerToUpdate->updatePreviousAndNextInRank(AVL_all_players_by_goals);
     playerToUpdate->getTeam()->updateBestTeamPlayer();
     updateBestAllPlayer();
-return StatusType::SUCCESS;
+    return StatusType::SUCCESS;
 }
 
 
@@ -239,14 +240,10 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
         arr_player_newTeam_byId[i]->setTeam(newTeam);
     }
 
-    AVL<int, Player*> AVLTeamId = AVL<int, Player*>(); // create the 2 new trees
-    AVL<PlayerStats, Player*> AVLTeamGoal= AVL<PlayerStats, Player*>() ;
 
-    AVLTeamId.array_to_AVL_inorder(arr_id, arr_player_newTeam_byId, num_player_newTeam_byId); // put the arrays into trees
-    AVLTeamGoal.array_to_AVL_inorder(arr_stats, arr_player_newTeam_byStats, num_player_newTeam_byId);
-
-    newTeam->putAVLid(AVLTeamId); //put the trees into the team
-    newTeam->putAVLGoal(AVLTeamGoal);
+    newTeam->getAvlTeamPlayersById()->array_to_AVL_inorder(arr_id, arr_player_newTeam_byId, num_player_newTeam_byId); // put the arrays into trees
+    newTeam->getAvlTeamPlayersByGoals()->array_to_AVL_inorder(arr_stats, arr_player_newTeam_byStats, num_player_newTeam_byId);
+    newTeam->updateBestTeamPlayer();
 
     delete team1;
     remove_team(teamId1);
@@ -351,7 +348,7 @@ int getConcurrentTeams(AVL<int, Team*>* AVL_valid_team, int minTeamId, int maxTe
 
 
 void getConcurrentTeamsHelper(Node<int, Team *> *actualNode, int minTeamId,
-                                     int maxTeamId, team_ptr_node *actualNodeInLinkedList, int *numOfTeams){
+                              int maxTeamId, team_ptr_node *actualNodeInLinkedList, int *numOfTeams){
     if(!actualNode){
         return;
     }
@@ -363,7 +360,7 @@ void getConcurrentTeamsHelper(Node<int, Team *> *actualNode, int minTeamId,
         newNode->next_node = nullptr;
         newNode->teamPtr = actualNode->data;
         newNode-> score =  actualNode->data->getPoints()+actualNode->data->getTotalGoal()
-                                                            -actualNode->data->getTotalCards();
+                           -actualNode->data->getTotalCards();
         actualNodeInLinkedList->next_node = newNode;
         actualNodeInLinkedList = actualNodeInLinkedList->next_node;
         *numOfTeams++;
@@ -447,12 +444,12 @@ void world_cup_t::mergeId(Player** arrayTeam1, Player** arrayTeam2,Player** arrO
             k++;
             i++;
         }
-            else{
+        else{
             (arrOfPlayerOf2Teams)[k] = (arrayTeam2)[j];
-                k++;
-                j++;
-            }
+            k++;
+            j++;
         }
+    }
     if (i==sizeTeam1){
         while (j<sizeTeam2){
             (arrOfPlayerOf2Teams)[k] = (arrayTeam2)[j];

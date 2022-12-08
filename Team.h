@@ -15,8 +15,8 @@ public:
     void addPlayedGame();
     void addGoals(int);
     void addCards(int);
-    void putAVLid(AVL<int,Player*>);
-    void putAVLGoal(AVL<PlayerStats, Player*>);
+    void putAVLid(AVL<int,Player*>*);
+    void putAVLGoal(AVL<PlayerStats, Player*>*);
     void updateBestTeamPlayer();
     void addGoalKeeper(int def=1);
     void putZeroPlayer();
@@ -29,8 +29,8 @@ public:
     int get_game_played()const;
     Player* getBestPlayer()const;
     bool isValid() const;
-    AVL<int, Player*>* getAvlTeamPlayersById();
-    AVL<PlayerStats, Player*>* getAvlTeamPlayersByGoals();
+    AVL<int, Player*>* getAvlTeamPlayersById()&;
+    AVL<PlayerStats, Player*>* getAvlTeamPlayersByGoals()&;
 
 
 private:
