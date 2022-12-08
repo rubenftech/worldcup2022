@@ -84,7 +84,7 @@ public:
         if (node == nullptr){ //not found
             return nullptr;
         }
-        else if (key < node->key){
+        else if (node->key > key){
             node->left = removeFunc(node->left, key);
         }
 
@@ -243,7 +243,7 @@ public:
         Node<T, S> *nearestBefore = root;
         Node<T, S> *trackNode = root;
         while (trackNode->key != key) {
-            if (trackNode->key < key) {
+            if (key > trackNode->key) {
                 if (nearestBefore->key > key || trackNode->key > nearestBefore->key) {
                     nearestBefore = trackNode;
                 }
@@ -261,7 +261,7 @@ public:
                 trackNode = trackNode->right;
             }
 
-            if (nearestBefore->key < trackNode->key || nearestBefore->key > key) {
+            if (trackNode->key > nearestBefore->key || nearestBefore->key > key) {
                 return trackNode->data;
             } else {
                 return nearestBefore->data;
@@ -284,11 +284,11 @@ public:
         Node<T,S>* nearestNext = root;
         Node<T,S>* trackNode = root;
         while(trackNode->key != key){
-            if (trackNode->key < key){
+            if (key > trackNode->key){
                 trackNode = trackNode->right;
             }
             else{
-                if(nearestNext->key < key || trackNode->key < nearestNext->key){
+                if(key > nearestNext->key || nearestNext->key > trackNode->key){
                     nearestNext = trackNode;
                 }
                 trackNode = trackNode->left;
@@ -302,7 +302,7 @@ public:
             while (trackNode->left) {
                 trackNode = trackNode->left;
             }
-            if (nearestNext->key > trackNode->key || nearestNext->key < key) {
+            if (nearestNext->key > trackNode->key || key > nearestNext->key) {
                 return trackNode->data;
             } else {
                 return nearestNext->data;
