@@ -251,7 +251,6 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     if (!AVL_valid_team.find(newTeam->getTeamId()) && AVL_team_by_id.find(newTeamId)->data->isValid()){
         AVL_valid_team.insert(newTeam->getTeamId(), newTeam);
     }
-
     AVL_team_by_id.insert(newTeamId, newTeam);
     delete[]arr_player_team1_byId;
     delete[]arr_player_team1_byGoals;
@@ -263,14 +262,15 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     delete[]arr_stats;
     if (newTeamId!=teamId1) {
         if (AVL_team_by_id.find(teamId1)->data->isValid()) {
-            AVL_team_by_id.remove(teamId1);
+            AVL_valid_team.remove(teamId1);
         }
+        AVL_team_by_id.remove(teamId1);
     }
     if (newTeamId!=teamId2){
         if (AVL_team_by_id.find(teamId2)->data->isValid()) {
-            AVL_team_by_id.remove(teamId2);
+            AVL_valid_team.remove(teamId2);
         }
-
+        AVL_team_by_id.remove(teamId2);
     }
     return StatusType::SUCCESS;
 }
