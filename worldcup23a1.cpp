@@ -207,7 +207,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     }
     Node<int, Team*>* nodeTeam1= AVL_team_by_id.find(teamId1);
     Node<int, Team*>* nodeTeam2= AVL_team_by_id.find(teamId2);
-    if (nodeTeam1== nullptr||nodeTeam2== nullptr||( AVL_team_by_id.find(newTeamId) != nullptr) && (AVL_team_by_id.find(newTeamId) != nodeTeam1)&& (AVL_team_by_id.find(newTeamId) != nodeTeam2)){
+    if (nodeTeam1== nullptr||nodeTeam2== nullptr||(AVL_team_by_id.find(newTeamId) && (AVL_team_by_id.find(newTeamId) != nodeTeam1)&& (AVL_team_by_id.find(newTeamId) != nodeTeam2))){
         return StatusType::FAILURE;
     }
 
