@@ -1,7 +1,7 @@
 #include "worldcup23a1.h"
 
 
-void getConcurrentTeamsHelper(Node<int, Team *> *pNode, int id, int id1, team_ptr_node **pNode1, int *pInt);
+void getConcurrentTeamsHelper(Node<int, Team *> *pNode, int id, int id1, team_ptr_node *pNode1, int *i);
 
 world_cup_t::world_cup_t(){
     AVL_team_by_id = AVL<int, Team *>();
@@ -328,32 +328,31 @@ output_t<int> world_cup_t::get_closest_player(int playerId, int teamId){
 
 int getConcurrentTeams(AVL<int, Team*>* AVL_valid_team, int minTeamId, int maxTeamId, team_ptr_node* first_node){
     int numOfTeams = 0;
-    team_ptr_node** actualNodeInLinkedList = &first_node;
-    getConcurrentTeamsHelper(AVL_valid_team->root, minTeamId, maxTeamId, actualNodeInLinkedList, &numOfTeams);
+    getConcurrentTeamsHelper(AVL_valid_team->root, minTeamId, maxTeamId, first_node, &numOfTeams);
     return numOfTeams;
 
 }
 
 
 void getConcurrentTeamsHelper(Node<int, Team *> *actualNode, int minTeamId,
-                                     int maxTeamId, team_ptr_node **actualNodeInLinkedList, int *numOfTeams){
+                                     int maxTeamId, team_ptr_node *actualNodeInLinkedList, int *numOfTeams){
     if(!actualNode){
         return;
     }
-    if(!actualNode->right || actualNode->right->key > minTeamId){
-        getConcurrentTeamsHelper(actualNode->right, minTeamId, maxTeamId, actualNodeInLinkedList, numOfTeams);
+    if(actualNode->key > minTeamId){
+        getConcurrentTeamsHelper(actualNode->left, minTeamId, maxTeamId, actualNodeInLinkedList, numOfTeams);
     }
-    if (actualNode->key < maxTeamId && actualNode->key > minTeamId){
+    if (actualNode->key <= maxTeamId && actualNode->key >= minTeamId){
         team_ptr_node* newNode = new team_ptr_node();
         newNode->next_node = nullptr;
         newNode->teamPtr = actualNode->data;
         newNode-> score =  actualNode->data->getPoints()+actualNode->data->getTotalGoal()
                                                             -actualNode->data->getTotalCards();
-        (*actualNodeInLinkedList)->next_node = newNode;
-        actualNodeInLinkedList = &((*actualNodeInLinkedList)->next_node);
+        actualNodeInLinkedList->next_node = newNode;
+        actualNodeInLinkedList = actualNodeInLinkedList->next_node;
         *numOfTeams++;
     }
-    if(!actualNode->left || actualNode->left->key < maxTeamId){
+    if(actualNode->key < maxTeamId){
         getConcurrentTeamsHelper(actualNode->right, minTeamId, maxTeamId, actualNodeInLinkedList, numOfTeams);
     }
 }
@@ -368,25 +367,25 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
     while(numOfConcurentTeams > 1){
         currentTeam = first_node;
         while (currentTeam->next_node && currentTeam->next_node->next_node){
-            if(currentTeam->next_node->score>currentTeam->next_node->next_node->score){
-                currentTeam->next_node->score+=currentTeam->next_node->next_node->score;
+            if(currentTeam->next_node->score > currentTeam->next_node->next_node->score){
+                currentTeam->next_node->score += currentTeam->next_node->next_node->score;
                 team_ptr_node* nodeTodelete = currentTeam->next_node->next_node;
                 currentTeam->next_node->next_node = nodeTodelete->next_node;
                 delete nodeTodelete;
             }
             else{
-                currentTeam->next_node->next_node->score+=currentTeam->next_node->score;
+                currentTeam->next_node->next_node->score += currentTeam->next_node->score;
                 team_ptr_node* nodeTodelete = currentTeam->next_node;
                 currentTeam->next_node = nodeTodelete->next_node;
                 delete nodeTodelete;
-            }currentTeam = currentTeam->next_node->next_node;
+            }
+            currentTeam = currentTeam->next_node;
             numOfConcurentTeams--;
         }
-        int winnerId = first_node ->next_node->teamPtr->getTeamId();
-        cout<< winnerId;
+        int winnerId = currentTeam->teamPtr->getTeamId();
         delete first_node->next_node;
         delete first_node;
-        return StatusType::SUCCESS;
+        return winnerId;
     }
     return StatusType::FAILURE;
 
