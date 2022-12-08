@@ -253,11 +253,10 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     team2->putZeroPlayer();
     remove_team(teamId2);
 
-
-    if (!AVL_valid_team.find(newTeam->getTeamId()) && AVL_team_by_id.find(newTeamId)->data->isValid()){
+    AVL_team_by_id.insert(newTeamId, newTeam);
+    if (AVL_team_by_id.find(newTeamId)->data->isValid()){
         AVL_valid_team.insert(newTeam->getTeamId(), newTeam);
     }
-    AVL_team_by_id.insert(newTeamId, newTeam);
     delete[]arr_player_team1_byId;
     delete[]arr_player_team1_byGoals;
     delete[]arr_player_team2_byId;
