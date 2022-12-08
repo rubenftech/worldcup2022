@@ -72,7 +72,12 @@ int Team::getPoints() const{
 }
 
 void Team::updateBestTeamPlayer(){
+    if(m_numOfPlayers==0){
+    m_bestTeamPlayer = nullptr;
+    }
+    else{
     m_bestTeamPlayer = teamPlayersByGoals.dataOfTheMax();
+    }
 }
 
 
