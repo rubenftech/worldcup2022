@@ -134,6 +134,15 @@ Team *Player::getTeam() {
 int Player::getClosest() {
     Player* playerNext= getNextInRank();
     Player* playerPrevious= getPreviousInRank();
+    if(!(playerNext) && !(playerPrevious)){
+        return 0;
+    }
+    if(!playerNext){
+        return playerPrevious->getId();
+    }
+    if(!playerPrevious){
+        return playerNext->getId();
+    }
     return (playerNext->getStats()-this->getStats()<this->getStats()-playerPrevious->getStats())? 
                                                     playerNext->getId() : playerPrevious->getId();
 }
