@@ -19,10 +19,11 @@
 #include "AVL_TREE_TEMPLATE.h"
 #include "Team.h"
 
-struct team_ptr_node{
-	Team* teamPtr;
-	team_ptr_node* next_node;
+struct team_score_node{
+	int id;
 	int score;
+	team_score_node* next_node;
+	
 };
 
 class world_cup_t {
@@ -72,6 +73,9 @@ public:
 	
 	output_t<int> get_closest_player(int playerId, int teamId);
 	
+	void getConcurrentTeamsHelper(Node<int, Team *> *actualNode, int minTeamId,
+                              int maxTeamId, team_score_node *actualNodeInLinkedList, int *numOfTeams);
+
 	output_t<int> knockout_winner(int minTeamId, int maxTeamId);
 	
 	// } </DO-NOT-MODIFY>

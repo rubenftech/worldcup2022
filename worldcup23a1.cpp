@@ -1,7 +1,6 @@
 #include "worldcup23a1.h"
 
 
-void getConcurrentTeamsHelper(Node<int, Team *> *pNode, int id, int id1, team_ptr_node *pNode1, int *i);
 
 world_cup_t::world_cup_t(){
     AVL_team_by_id = AVL<int, Team *>();
@@ -341,17 +340,8 @@ output_t<int> world_cup_t::get_closest_player(int playerId, int teamId){
     return AVL_team_by_id.find(teamId)->data->getAvlTeamPlayersById()->find(playerId)->data->getClosest();
 }
 
-
-int getConcurrentTeams(AVL<int, Team*>* AVL_valid_team, int minTeamId, int maxTeamId, team_ptr_node* first_node){
-    int numOfTeams = 0;
-    getConcurrentTeamsHelper(AVL_valid_team->root, minTeamId, maxTeamId, first_node, &numOfTeams);
-    return numOfTeams;
-
-}
-
-
 void getConcurrentTeamsHelper(Node<int, Team *> *actualNode, int minTeamId,
-                              int maxTeamId, team_ptr_node *actualNodeInLinkedList, int *numOfTeams){
+                              int maxTeamId, team_score_node *actualNodeInLinkedList, int *numOfTeams){
     if(!actualNode){
         return;
     }
@@ -359,46 +349,56 @@ void getConcurrentTeamsHelper(Node<int, Team *> *actualNode, int minTeamId,
         getConcurrentTeamsHelper(actualNode->left, minTeamId, maxTeamId, actualNodeInLinkedList, numOfTeams);
     }
     if (actualNode->key <= maxTeamId && actualNode->key >= minTeamId){
-        team_ptr_node* newNode = new team_ptr_node();
+        team_score_node* newNode = new team_score_node();
         newNode->next_node = nullptr;
-        newNode->teamPtr = actualNode->data;
-        newNode-> score =  actualNode->data->getPoints()+actualNode->data->getTotalGoal()
+        newNode->id = actualNode->data->getTeamId();
+        newNode-> score =  actualNode->data->getPoints() + actualNode->data->getTotalGoal()
                            -actualNode->data->getTotalCards();
         actualNodeInLinkedList->next_node = newNode;
         actualNodeInLinkedList = actualNodeInLinkedList->next_node;
-        *numOfTeams++;
+        (*numOfTeams)++;
     }
     if(actualNode->key < maxTeamId){
         getConcurrentTeamsHelper(actualNode->right, minTeamId, maxTeamId, actualNodeInLinkedList, numOfTeams);
     }
 }
 
+int getConcurrentTeams(AVL<int, Team*>* AVL_valid_team, int minTeamId, int maxTeamId, team_score_node* first_node){
+    int numOfTeams = 0;
+    getConcurrentTeamsHelper(AVL_valid_team->root, minTeamId, maxTeamId, first_node, &numOfTeams);
+    return numOfTeams;
+
+}
+
+
+
+
 output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
-    team_ptr_node* first_node = new team_ptr_node();
+    team_score_node* first_node = new team_score_node();
     first_node->next_node = nullptr;
-    first_node->teamPtr = nullptr;
+    first_node->id = 0;
     first_node->score = 0;
     int numOfConcurentTeams = getConcurrentTeams(&AVL_valid_team, minTeamId, maxTeamId, first_node);
-    team_ptr_node* currentTeam = nullptr;
+    team_score_node* currentTeam = nullptr;
     while(numOfConcurentTeams > 1){
         currentTeam = first_node;
         while (currentTeam->next_node && currentTeam->next_node->next_node){
             if(currentTeam->next_node->score > currentTeam->next_node->next_node->score){
                 currentTeam->next_node->score += currentTeam->next_node->next_node->score;
-                team_ptr_node* nodeTodelete = currentTeam->next_node->next_node;
+                team_score_node* nodeTodelete = currentTeam->next_node->next_node;
                 currentTeam->next_node->next_node = nodeTodelete->next_node;
                 delete nodeTodelete;
             }
             else{
                 currentTeam->next_node->next_node->score += currentTeam->next_node->score;
-                team_ptr_node* nodeTodelete = currentTeam->next_node;
+                team_score_node* nodeTodelete = currentTeam->next_node;
                 currentTeam->next_node = nodeTodelete->next_node;
                 delete nodeTodelete;
             }
             currentTeam = currentTeam->next_node;
             numOfConcurentTeams--;
         }
-        int winnerId = currentTeam->teamPtr->getTeamId();
+        int winnerId = currentTeam->id;
         delete first_node->next_node;
         delete first_node;
         return winnerId;
