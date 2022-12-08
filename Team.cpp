@@ -80,7 +80,6 @@ void Team::updateBestTeamPlayer(){
     }
 }
 
-
 bool operator>(const Team &team1, const Team &team2) {
     if (team1.getPoints()+team1.getTotalGoal()-team1.getTotalCards()>
                 team2.getPoints()+team2.getTotalGoal()-team2.getTotalCards()){

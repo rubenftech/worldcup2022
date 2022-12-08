@@ -80,5 +80,5 @@ public:
 	
 	// } </DO-NOT-MODIFY>
 };
-
+ 
 #endif // WORLDCUP23A1_H_

@@ -8,7 +8,7 @@ public:
     Team(int team_id, int team_points, int numOfPlayers=0, int goal=0, int cards=0);
     ~Team();
     Team& operator=(const Team&)=default;
-
+ 
     void addPlayer(Player *player);
     void removePlayer(Player *player);
     void addPoints(int pointsToAdd);

@@ -20,7 +20,6 @@ public:
 bool operator<(const PlayerStats& player1, const PlayerStats& player2);
 bool operator!=(const PlayerStats& player1, const PlayerStats& player2);
 
-
 class Player{
 public:
     Player(int playerId, int teamId, int gamesPlayed=0, int goals=0, int cards=0, bool goalKeeper=0);

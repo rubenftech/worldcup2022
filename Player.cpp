@@ -114,7 +114,6 @@ Player* Player::getPreviousInRank() const{
     return m_previousInRank;
 }
 
-
 Player* Player::getNextInRank() const{
     return m_nextInRank;
 }

@@ -222,7 +222,7 @@ public:
         else
             return findMax(node->right);
     }
-
+ 
     S dataOfTheMax() const{
         return findMax(root)->data;
     }
