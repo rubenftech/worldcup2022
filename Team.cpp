@@ -135,5 +135,9 @@ int Team::getTeamId() const{
     return m_team_id;
 }
 
+void Team::putZeroPlayer() {
+    m_numOfPlayers=0;
+}
+
 
 

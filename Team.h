@@ -19,6 +19,7 @@ public:
     void putAVLGoal(AVL<PlayerStats, Player*>);
     void updateBestTeamPlayer();
     void addGoalKeeper(int def=1);
+    void putZeroPlayer();
 
     int getTeamId()const;
     int getPoints()const;
