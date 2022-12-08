@@ -11,7 +11,7 @@ world_cup_t::world_cup_t(){
 
 
 world_cup_t::~world_cup_t(){
-    AVL_team_by_id.clearTree(); // il faut supprimer les ARBRES DE JOUEURS
+    AVL_team_by_id.clearDataAndTree(); // il faut supprimer les ARBRES DE JOUEURS
     AVL_all_players_by_goals.clearTree();
     AVL_valid_team.clearTree();
     AVL_all_players_by_id.clearDataAndTree();
