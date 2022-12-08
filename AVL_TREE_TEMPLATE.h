@@ -232,11 +232,18 @@ class AVL{
 //        if(key == nullptr){
 //            return nullptr;
 //        }
+        Node<T,S>* minNode = root;
+        while(minNode->left){
+            minNode = minNode->left;
+        }
+        if(minNode->key == key){
+            return nullptr;
+        }
         Node<T, S> *nearestBefore = root;
         Node<T, S> *trackNode = root;
         while (trackNode->key != key) {
             if (trackNode->key < key) {
-                if (trackNode->key > nearestBefore->key) {
+                if (nearestBefore->key > key || trackNode->key > nearestBefore->key) {
                     nearestBefore = trackNode;
                 }
                 trackNode = trackNode->right;
@@ -247,23 +254,17 @@ class AVL{
                 return nullptr;
             }
         }
-        if(trackNode == root && !(trackNode->left)){
-            return nullptr;
-        }
         if (trackNode->left) {
             trackNode = trackNode->left;
             while (trackNode->right) {
                 trackNode = trackNode->right;
             }
 
-            if (nearestBefore->key < trackNode->key) {
+            if (nearestBefore->key < trackNode->key || nearestBefore->key > key) {
                 return trackNode->data;
             } else {
                 return nearestBefore->data;
             }
-        }
-        if(nearestBefore->key == key){
-            return nullptr;
         }
         return nearestBefore->data;
 
@@ -272,6 +273,13 @@ class AVL{
 //        if(key == nullptr){
 //            return nullptr;
 //        }
+        Node<T,S>* maxNode = root;
+        while(maxNode->right){
+            maxNode = maxNode->right;
+        }
+        if(maxNode->key == key){
+            return nullptr;
+        }
         Node<T,S>* nearestNext = root;
         Node<T,S>* trackNode = root;
         while(trackNode->key != key){
@@ -279,7 +287,7 @@ class AVL{
                 trackNode = trackNode->right;
             }
             else{
-                if(trackNode->key < nearestNext->key){
+                if(nearestNext->key < key || trackNode->key < nearestNext->key){
                     nearestNext = trackNode;
                 }
                 trackNode = trackNode->left;
@@ -288,23 +296,18 @@ class AVL{
                 return nullptr;
             }
         }
-        if(trackNode == root && !(trackNode->right)){
-            return nullptr;
-        }
         if(trackNode->right) {
             trackNode = trackNode->right;
             while (trackNode->left) {
-                trackNode = trackNode->right;
+                trackNode = trackNode->left;
             }
-            if (nearestNext->key > trackNode->key) {
+            if (nearestNext->key > trackNode->key || nearestNext->key < key) {
                 return trackNode->data;
             } else {
                 return nearestNext->data;
             }
         }
-        if(nearestNext->key == key){
-            return nullptr;
-        }
+
         return nearestNext->data;
     }
 

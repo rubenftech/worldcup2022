@@ -78,8 +78,8 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     if  (AVL_team_by_id.find(teamId)->data->isValid()){
         AVL_valid_team.insert(teamId,AVL_team_by_id.find(teamId)->data);
     }
-    player_to_add->updatePreviousInRank(AVL_all_players_by_goals);
-    player_to_add->updateNextInRank(AVL_all_players_by_goals);
+
+    player_to_add->updatePreviousAndNextInRank(AVL_all_players_by_goals);
     player_to_add->getTeam()->updateBestTeamPlayer();
     updateBestAllPlayer();
 
@@ -131,8 +131,7 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
     playerToUpdate->getTeam()->addGoals(scoredGoals-playerToUpdate->getGoals());
     playerToUpdate->addCards(cardsReceived-playerToUpdate->getCards());
     playerToUpdate->getTeam()->addCards(scoredGoals-playerToUpdate->getCards());
-    playerToUpdate->updatePreviousInRank(AVL_all_players_by_goals);
-    playerToUpdate->updateNextInRank(AVL_all_players_by_goals);
+    playerToUpdate->updatePreviousAndNextInRank(AVL_all_players_by_goals);
     playerToUpdate->getTeam()->updateBestTeamPlayer();
     updateBestAllPlayer();
 	return StatusType::SUCCESS;
@@ -207,15 +206,15 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
 
     Player **arr_player_newTeam_byId = new Player*[num_player_newTeam_byId];
     Player **arr_player_newTeam_byStats= new Player*[num_player_newTeam_byId];
-    int** arr_id = new int*[num_player_newTeam_byId];
-    PlayerStats** arr_stats= new PlayerStats*[num_player_newTeam_byId];
+    int* arr_id = new int[num_player_newTeam_byId];
+    PlayerStats* arr_stats= new PlayerStats[num_player_newTeam_byId];
 
     mergeId ( &arr_player_team1_byId, &arr_player_team2_byId, &arr_player_newTeam_byId, team1->getNumOfPlayer(), team2->getNumOfPlayer());
     mergeGoal(arr_player_team1_byGoals,arr_player_team2_byGoals,arr_player_newTeam_byStats,team1->getNumOfPlayer(), team2->getNumOfPlayer());
 
-    for(int i = 0; i<num_player_newTeam_byId; i++){
-        *arr_id[i]= arr_player_newTeam_byId[i]->getId() ;
-       *arr_stats[i] = arr_player_newTeam_byStats[i]->getPlayerStats();
+    for(int i = 0; i < num_player_newTeam_byId; i++){
+        arr_id[i]= arr_player_newTeam_byId[i]->getId() ;
+        arr_stats[i] = arr_player_newTeam_byStats[i]->getPlayerStats();
     }
 
     Team* newTeam = new Team(  newTeamId,
@@ -228,8 +227,8 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     AVL<int, Player*> AVLTeamId = AVL<int, Player*>(); // create the 2 new trees
     AVL<PlayerStats, Player*> AVLTeamGoal= AVL<PlayerStats, Player*>() ;
 
-    AVLTeamId.array_to_AVL_inorder(arr_id, &arr_player_newTeam_byId, num_player_newTeam_byId); // put the arrays into trees
-    AVLTeamGoal.array_to_AVL_inorder(arr_stats, &arr_player_newTeam_byStats, num_player_newTeam_byId);
+    AVLTeamId.array_to_AVL_inorder(&arr_id, &arr_player_newTeam_byId, num_player_newTeam_byId); // put the arrays into trees
+    AVLTeamGoal.array_to_AVL_inorder(&arr_stats, &arr_player_newTeam_byStats, num_player_newTeam_byId);
 
     newTeam->putAVLid(AVLTeamId); //put the trees into the team
     newTeam->putAVLGoal(AVLTeamGoal);
@@ -382,7 +381,7 @@ Player **world_cup_t::mergeGoal (Player* arrayTeam1[], Player* arrayTeam2[],Play
 
     int i = 0, j = 0, k = 0;
     while (i < sizeTeam1 && j < sizeTeam2) {
-        if (arrayTeam1[i]->getPlayerStats() > arrayTeam2[j]->getPlayerStats()) {
+        if (arrayTeam1[i]->getPlayerStats() < arrayTeam2[j]->getPlayerStats()) {
             arrOfPlayerOf2Teams[k] = arrayTeam1[i];
             i++;
             k++;
@@ -413,7 +412,7 @@ void world_cup_t::mergeId(Player*** arrayTeam1, Player*** arrayTeam2,Player*** a
 
     int i=0, j=0,k=0;
     while (i<sizeTeam1 && j<sizeTeam2){
-        if ((*arrayTeam1)[i]->getId() > (*arrayTeam2)[j]->getId()) {
+        if ((*arrayTeam1)[i]->getId() < (*arrayTeam2)[j]->getId()) {
             (*arrOfPlayerOf2Teams)[k] = (*arrayTeam1)[i];
             k++;
             i++;
@@ -424,7 +423,7 @@ void world_cup_t::mergeId(Player*** arrayTeam1, Player*** arrayTeam2,Player*** a
                 j++;
             }
         }
-    if (i==sizeTeam1-1){
+    if (i==sizeTeam1){
         while (j<sizeTeam2){
             (*arrOfPlayerOf2Teams)[k] = (*arrayTeam2)[j];
             k++;

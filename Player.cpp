@@ -82,17 +82,26 @@ bool Player::isGoalKeeper() const{
     return m_goalKeeper;
 }
 
-void Player::updatePreviousInRank(AVL<PlayerStats, Player*>& rankedTree){
+void Player::updatePreviousAndNextInRank(AVL<PlayerStats, Player*>& rankedTree){
     PlayerStats keyInRankedTree(m_goals, m_cards, m_playerId);
     Player* previousInRank = m_previousInRank;
     Player* nextInRank = m_nextInRank;
     m_previousInRank = rankedTree.getPreviousInorder(keyInRankedTree);
+    m_nextInRank = rankedTree.getNextInorder(keyInRankedTree);
+
     if(m_previousInRank){
         m_previousInRank->setNextInRank(this);
+    }
+    if(m_nextInRank){
+        m_nextInRank->setPreviousInRank(this);
     }
     if(previousInRank && (!m_previousInRank||m_previousInRank->m_playerId != previousInRank->m_playerId)){
         previousInRank->m_nextInRank = nextInRank;
     }
+    if(nextInRank && (!m_nextInRank || m_nextInRank->m_playerId != nextInRank->m_playerId)){
+        nextInRank->m_previousInRank = previousInRank;
+    }
+
 
 
 }
@@ -109,18 +118,6 @@ Player* Player::getPreviousInRank() const{
     return m_previousInRank;
 }
 
-void Player::updateNextInRank(AVL<PlayerStats, Player*>& rankedTree){
-    Player* previousInRank = m_previousInRank;
-    Player* nextInRank = m_nextInRank;
-    PlayerStats keyInRankedTree(m_goals, m_cards, m_playerId);
-    m_nextInRank = rankedTree.getNextInorder(keyInRankedTree);
-    if(m_nextInRank){
-        m_nextInRank->setPreviousInRank(this);
-    }
-    if(nextInRank && (!m_nextInRank || m_nextInRank->m_playerId != nextInRank->m_playerId)){
-        nextInRank->m_previousInRank = previousInRank;
-    }
-}
 
 Player* Player::getNextInRank() const{
     return m_nextInRank;
