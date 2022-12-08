@@ -415,11 +415,12 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId){
             currentTeam = currentTeam->next_node;
             numOfConcurentTeams--;
         }
-        int winnerId = currentTeam->id;
-        delete first_node->next_node;
-        delete first_node;
-        return winnerId;
+
     }
+    int winnerId = currentTeam->id;
+    delete first_node->next_node;
+    delete first_node;
+    return winnerId;
     return StatusType::FAILURE;
 
 }
