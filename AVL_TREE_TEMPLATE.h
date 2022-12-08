@@ -88,7 +88,7 @@ public:
             node->left = removeFunc(node->left, key);
         }
 
-        else if (node->key < key){
+        else if (key > node->key){
             node->right = removeFunc(node->right, key);
         }
 
