@@ -165,7 +165,7 @@ int Player::getClosest() {
         return playerNext->getId();
     }
     if(abso(m_playerId - playerPrevious->getId()) <  abso(playerNext->getId() - m_playerId )){
-        return playerNext->getId();
+        return playerPrevious->getId();
     }
     if(playerNext->getId()>playerPrevious->getId()){
         return playerNext->getId();
