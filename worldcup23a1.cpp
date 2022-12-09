@@ -187,7 +187,7 @@ output_t<int> world_cup_t::get_num_played_games(int playerId){
         return StatusType::FAILURE;
     }
     Player* player = AVL_all_players_by_id.find(playerId)->data;
-    return player->getNumGames()+ player->getTeam()->get_game_played();
+    return player->getNumGames() + player->getTeam()->get_game_played();
 }
 
 
@@ -246,6 +246,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     for(int i = 0; i < num_player_newTeam_byId; i++){
         arr_id[i]= arr_player_newTeam_byId[i]->getId() ;
         arr_stats[i] = arr_player_newTeam_byStats[i]->getPlayerStats();
+        arr_player_newTeam_byId[i]->addGames(arr_player_newTeam_byId[i]->getTeam()->get_game_played());
         arr_player_newTeam_byId[i]->setTeam(newTeam);
     }
 
