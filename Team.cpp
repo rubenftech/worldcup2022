@@ -10,7 +10,7 @@ Team::Team(int team_id, int team_points, int numOfPlayers, int goal, int cards):
                                         m_numOfPlayers(numOfPlayers),
                                         m_total_goal(goal),
                                         m_total_cards(cards),
-                                        m_bestTeamPlayer(nullptr){};
+                                        m_bestTeamPlayer(){}
 
 
 
