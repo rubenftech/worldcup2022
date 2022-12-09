@@ -85,7 +85,7 @@ bool operator>(const Team &team1, const Team &team2) {
                 team2.getPoints()+team2.getTotalGoal()-team2.getTotalCards()){
         return true;
     }
-    return false;
+    else return false;
 }
 
 int Team::get_game_played() const {
