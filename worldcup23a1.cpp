@@ -188,7 +188,7 @@ output_t<int> world_cup_t::get_num_played_games(int playerId){
         return StatusType::FAILURE;
     }
     Player* player = AVL_all_players_by_id.find(playerId)->data;
-    return player->getNumGames()+ player->getTeam()->get_game_played();
+    return player->getNumGames() + player->getTeam()->get_game_played();
 }
 
 
