@@ -1,12 +1,16 @@
 #include"Player.h"
-
-
+int abso(int num){
+    if(num<0){
+        return -num;
+    }
+    return num;
+}
 PlayerStats::PlayerStats(int goals, int cards, int id): m_goals(goals),
                                                         m_cards(cards),
                                                         m_playerId(id){}
 
 PlayerStats PlayerStats::operator-(const PlayerStats& playerStats)const{
-    return PlayerStats(m_goals-playerStats.m_goals, m_cards-playerStats.m_cards, m_playerId-playerStats.m_playerId);
+    return PlayerStats(m_goals-playerStats.m_goals, playerStats.m_cards - m_cards, m_playerId-playerStats.m_playerId);
 }
 bool operator>(const PlayerStats& player1, const PlayerStats& player2){
     if(player1.m_goals > player2.m_goals){
@@ -143,26 +147,32 @@ int Player::getClosest() {
     if(!playerPrevious){
         return playerNext->getId();
     }
-    // if(playerPrevious->getGoals() - m_goals > m_goals - playerNext->getGoals()){
-    //     return playerPrevious->getId();
-    // }
-    // if(playerPrevious->getGoals() - m_goals < m_goals - playerNext->getGoals()){
-    //     return playerNext->getId();
-    // }
-    // if(playerNext->getCards() -  m_cards < m_cards - playerPrevious->getCards())
-    // {
-    //     return playerNext->getId();
-    // }
-    // if(playerNext->getCards() -  m_cards > m_cards - playerPrevious->getCards())
-    // {
-    //     return playerPrevious->getId();
-    // }
-    // if(playerPrevious->getId() - m_playerId > m_playerId - playerNext->getId()){
-    //     return playerPrevious->getId();}
-    // if(playerPrevious->getId() - m_playerId < m_playerId - playerNext->getId()){
-    //     return playerNext->getId();
-    // }
-    // return playerNext->getId();
-   return (this->getStats()-playerPrevious->getStats() > playerNext->getStats()-this->getStats())? 
-                                                  playerNext->getId() : playerPrevious->getId();
+    if(abso(m_goals - playerPrevious->getGoals()) <  abso(playerNext->getGoals() - m_goals)){
+        return playerPrevious->getId();
+    }
+    if(abso(m_goals - playerPrevious->getGoals()) >  abso(playerNext->getGoals() - m_goals)){
+        return playerNext->getId();
+    }
+    if(abso(m_cards - playerNext->getCards()) <  abso(playerPrevious->getCards() - m_cards))
+    {
+        return playerNext->getId();
+    }
+    if(abso(m_cards - playerNext->getCards()) >  abso(playerPrevious->getCards() - m_cards))
+    {
+        return playerPrevious->getId();
+    }
+    if(abso(m_playerId - playerPrevious->getId()) >  abso(playerNext->getId() - m_playerId) ){
+        return playerNext->getId();
+    }
+    if(abso(m_playerId - playerPrevious->getId()) <  abso(playerNext->getId() - m_playerId )){
+        return playerNext->getId();
+    }
+    if(playerNext->getId()>playerPrevious->getId()){
+        return playerNext->getId();
+    }
+    else{
+        return playerPrevious->getId();
+    }
+//   return (playerNext->getStats()-this->getStats() > this->getStats()-playerPrevious->getStats())? 
+                                                //   playerPrevious->getId() : playerNext->getId();
 }

@@ -354,6 +354,42 @@ output_t<int> world_cup_t::get_closest_player(int playerId, int teamId){
     if (!AVL_team_by_id.find(teamId)||! AVL_team_by_id.find(teamId)->data->getAvlTeamPlayersById()->find(playerId)||num_of_players<=1){
         return StatusType::FAILURE;
     }
+    // Player* player = AVL_team_by_id.find(teamId)->data->getAvlTeamPlayersById()->find(playerId)->data;
+    // Player* playerNext= player->getNextInRank();
+    // Player* playerPrevious= player->getPreviousInRank();
+    // if(!(playerNext) && !(playerPrevious)){
+    //     return 0;
+    // }
+    // if(!playerNext){
+    //     return playerPrevious->getId();
+    // }
+    // if(!playerPrevious){
+    //     return playerNext->getId();
+    // }
+    // if((player->getGoals()+player->getTeam()->get_game_played() - (playerPrevious->getGoals())+(playerPrevious->getTeam()->get_game_played()))<  
+    //                 playerNext->getGoals() + playerNext->getTeam()->get_game_played() - (player->getGoals()+player->getTeam()->get_game_played())){
+    //     return playerPrevious->getId();
+    // }
+    // if((player->getGoals()+player->getTeam()->get_game_played() - (playerPrevious->getGoals())+(playerPrevious->getTeam()->get_game_played()))>  
+    //                 playerNext->getGoals() + playerNext->getTeam()->get_game_played() - (player->getGoals()+player->getTeam()->get_game_played())){
+    //     return playerNext->getId();
+    // }
+    // if(player->getCards() - playerNext->getCards() <  playerPrevious->getCards() - player->getCards())
+    // {
+    //     return playerNext->getId();
+    // }
+    // if(player->getCards() - playerNext->getCards() >  playerPrevious->getCards() - player->getCards())
+    // {
+    //     return playerPrevious->getId();
+    // }
+    // if(player->getId() - playerPrevious->getId() >  playerNext->getId() - player->getId() ){
+    //     return playerNext->getId();
+    // }
+    // if(player->getId() - playerPrevious->getId() <  playerNext->getId() - player->getId() ){
+    //     return playerNext->getId();
+    // }
+    // return playerNext->getId();
+
     return AVL_team_by_id.find(teamId)->data->getAvlTeamPlayersById()->find(playerId)->data->getClosest();
 }
 
