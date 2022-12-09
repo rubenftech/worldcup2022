@@ -143,6 +143,26 @@ int Player::getClosest() {
     if(!playerPrevious){
         return playerNext->getId();
     }
-    return (playerNext->getStats()-this->getStats()<this->getStats()-playerPrevious->getStats())? 
-                                                    playerNext->getId() : playerPrevious->getId();
+    // if(playerPrevious->getGoals() - m_goals > m_goals - playerNext->getGoals()){
+    //     return playerPrevious->getId();
+    // }
+    // if(playerPrevious->getGoals() - m_goals < m_goals - playerNext->getGoals()){
+    //     return playerNext->getId();
+    // }
+    // if(playerNext->getCards() -  m_cards < m_cards - playerPrevious->getCards())
+    // {
+    //     return playerNext->getId();
+    // }
+    // if(playerNext->getCards() -  m_cards > m_cards - playerPrevious->getCards())
+    // {
+    //     return playerPrevious->getId();
+    // }
+    // if(playerPrevious->getId() - m_playerId > m_playerId - playerNext->getId()){
+    //     return playerPrevious->getId();}
+    // if(playerPrevious->getId() - m_playerId < m_playerId - playerNext->getId()){
+    //     return playerNext->getId();
+    // }
+    // return playerNext->getId();
+   return (this->getStats()-playerPrevious->getStats() > playerNext->getStats()-this->getStats())? 
+                                                  playerNext->getId() : playerPrevious->getId();
 }

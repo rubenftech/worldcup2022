@@ -131,7 +131,8 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
     bool goalkeeper = AVL_all_players_by_id.find(playerId)->data->isGoalKeeper();
     int teamId =AVL_all_players_by_id.find(playerId)->data->getTeam()->getTeamId();
     int cardsAll= cardsReceived + AVL_all_players_by_id.find(playerId)->data->getCards();
-    int gamesPlayedAll= gamesPlayed + AVL_all_players_by_id.find(playerId)->data->getNumGames();
+    int gamesPlayedAll= gamesPlayed + AVL_all_players_by_id.find(playerId)->data->getNumGames() +
+                        AVL_all_players_by_id.find(playerId)->data->getTeam()->get_game_played() ;
     int scoredGoalsAll= scoredGoals + AVL_all_players_by_id.find(playerId)->data->getGoals();
     remove_player(playerId);
     add_player(playerId, teamId, gamesPlayedAll, scoredGoalsAll, cardsAll, goalkeeper);
@@ -163,10 +164,10 @@ StatusType world_cup_t::play_match(int teamId1, int teamId2){
         return StatusType::FAILURE;
     }
 
-    if (team1 > team2){
+    if (*team1 > *team2){
         team1->addPoints(3);
     }
-   else if (team2 > team1){
+   else if (*team2 > *team1){
         team2->addPoints(3);
     }
     else{
@@ -246,7 +247,9 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId){
     for(int i = 0; i < num_player_newTeam_byId; i++){
         arr_id[i]= arr_player_newTeam_byId[i]->getId() ;
         arr_stats[i] = arr_player_newTeam_byStats[i]->getPlayerStats();
+        arr_player_newTeam_byId[i]->addGames(arr_player_newTeam_byId[i]->getTeam()->get_game_played());
         arr_player_newTeam_byId[i]->setTeam(newTeam);
+        
     }
 
 
